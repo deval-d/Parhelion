@@ -1,4 +1,3 @@
-#pragma once 
 #include "AoS_SoA.hpp"
 #include <arm_sve.h> 
 
@@ -192,10 +191,10 @@ namespace {
     }
 }
 
-
-inline void convert_to_planar(Frame& frame) { 
+void convert_to_planar(Frame& frame) { 
     if (frame.get_frame_layout() == Planar) 
         return;
+
 
     switch (frame.get_pixel_format()) { 
         case (Gray): {
@@ -214,7 +213,7 @@ inline void convert_to_planar(Frame& frame) {
     frame.set_frame_layout(Planar);  
 }
 
-inline void convert_to_interleaved(Frame& frame) { 
+void convert_to_interleaved(Frame& frame) { 
     if (frame.get_frame_layout() == Interleaved) 
         return; 
 
