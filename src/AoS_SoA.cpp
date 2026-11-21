@@ -6,8 +6,9 @@ namespace {
     void rgb_to_planar(Frame& frame) { 
         std::size_t n = frame.get_width() * frame.get_height(); 
 
-        std::span<std::byte> src = frame.get_buf_span_mut(0, n * 3).value();
-        std::uint8_t *src_ptr = reinterpret_cast<std::uint8_t *>(src.data()); 
+        FrameViewRef view = frame.view_ref(); 
+        std::span<const std::byte> src = view.get_span(); 
+        const std::uint8_t *src_ptr = reinterpret_cast<const std::uint8_t *>(src.data()); 
 
         std::vector<std::byte> out(n * 3); 
         std::uint8_t *dst = reinterpret_cast<std::uint8_t *>(out.data()); 
@@ -54,11 +55,12 @@ namespace {
     void rgb_to_interleaved(Frame& frame) { 
         std::size_t n = frame.get_width() * frame.get_height(); 
 
-        std::span<std::byte> src = frame.get_buf_span_mut(0, n * 3).value(); 
-        std::uint8_t *src_ptr = reinterpret_cast<std::uint8_t *>(src.data());
-        std::uint8_t *r_ptr = src_ptr;
-        std::uint8_t *g_ptr = src_ptr + n;
-        std::uint8_t *b_ptr = src_ptr + 2 * n; 
+        FrameViewRef view = frame.view_ref();
+        std::span<const std::byte> src = view.get_span(); 
+        const std::uint8_t *src_ptr = reinterpret_cast<const std::uint8_t *>(src.data());
+        const std::uint8_t *r_ptr = src_ptr;
+        const std::uint8_t *g_ptr = src_ptr + n;
+        const std::uint8_t *b_ptr = src_ptr + 2 * n; 
 
         std::vector<std::byte> out(n * 3); 
         std::uint8_t *dst = reinterpret_cast<std::uint8_t *>(out.data()); 
@@ -96,8 +98,9 @@ namespace {
     void rgba_to_planar(Frame& frame) { 
         std::size_t n = frame.get_width() * frame.get_height(); 
 
-        std::span<std::byte> src = frame.get_buf_span_mut(0, n * 4).value();
-        std::uint8_t *src_ptr = reinterpret_cast<std::uint8_t *>(src.data()); 
+        FrameViewRef view = frame.view_ref();
+        std::span<const std::byte> src = view.get_span(); 
+        const std::uint8_t *src_ptr = reinterpret_cast<const std::uint8_t *>(src.data()); 
 
         std::vector<std::byte> out(n * 4);
         std::uint8_t *dst = reinterpret_cast<std::uint8_t *>(out.data());
@@ -149,12 +152,13 @@ namespace {
     void rgba_to_interleaved(Frame& frame) { 
         std::size_t n = frame.get_width() * frame.get_height(); 
 
-        std::span<std::byte> src = frame.get_buf_span_mut(0, n * 4).value(); 
-        std::uint8_t *src_ptr = reinterpret_cast<std::uint8_t *>(src.data());
-        std::uint8_t *r_ptr = src_ptr;
-        std::uint8_t *g_ptr = src_ptr + n;
-        std::uint8_t *b_ptr = src_ptr + 2 * n; 
-        std::uint8_t *a_ptr = src_ptr + 3 * n; 
+        FrameViewRef view = frame.view_ref();
+        std::span<const std::byte> src = view.get_span(); 
+        const std::uint8_t *src_ptr = reinterpret_cast<const std::uint8_t *>(src.data());
+        const std::uint8_t *r_ptr = src_ptr;
+        const std::uint8_t *g_ptr = src_ptr + n;
+        const std::uint8_t *b_ptr = src_ptr + 2 * n; 
+        const std::uint8_t *a_ptr = src_ptr + 3 * n; 
 
         std::vector<std::byte> out(n * 4); 
         std::uint8_t *dst = reinterpret_cast<std::uint8_t *>(out.data()); 

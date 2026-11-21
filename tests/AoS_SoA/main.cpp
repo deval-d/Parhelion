@@ -26,17 +26,17 @@ void check_frame(
     check("width", frame.get_width(), width);
     check("height", frame.get_height(), height);
 
-    const auto pixels = frame.get_buf_span_ref(0, expected.size());
-    if (!pixels || frame.get_buf_span_ref(0, expected.size() + 1)) {
+    const auto pixels = frame.view_ref().get_span();
+    if (pixels.size() != expected.size()) {
         std::cerr << "incorrect buffer size\n";
         passed = false;
     }
 
-    if (pixels) {
+    if (pixels.size() == expected.size()) {
         for (std::size_t i = 0; i < expected.size(); ++i) {
-            if ((*pixels)[i] != expected[i]) {
+            if (pixels[i] != expected[i]) {
                 std::cerr << "byte " << i
-                          << ": received " << std::to_integer<int>((*pixels)[i])
+                          << ": received " << std::to_integer<int>(pixels[i])
                           << ", expected " << std::to_integer<int>(expected[i]) << '\n';
                 passed = false;
                 break;

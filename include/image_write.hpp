@@ -34,8 +34,8 @@ inline void image_write(const char* path, const Frame& frame) {
     if (h > std::numeric_limits<std::size_t>::max() / stride)
         throw std::length_error("image is too large");
 
-    const auto pixels = frame.get_buf_span_ref(0, stride * h);
-    if (!pixels)
+    const auto pixels = frame.view_ref().get_span();
+    if (pixels.size() < stride * h)
         throw std::invalid_argument("image buffer is too small");
 
     if (!stbi_write_png(
@@ -43,7 +43,7 @@ inline void image_write(const char* path, const Frame& frame) {
         static_cast<int>(w),
         static_cast<int>(h),
         channels,
-        pixels->data(),
+        pixels.data(),
         static_cast<int>(stride)
     ))
         throw std::runtime_error("failed to write image");
