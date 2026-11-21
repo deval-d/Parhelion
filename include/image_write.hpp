@@ -8,14 +8,14 @@ inline void image_write(const char* path, const Frame& frame) {
     if (path == nullptr)
         throw std::invalid_argument("image path is null");
 
-    if (frame.get_frame_layout() != Interleaved)
+    if (frame.get_frame_layout() != FrameLayout::Interleaved)
         throw std::invalid_argument("image writing requires interleaved pixels");
 
     int channels;
     switch (frame.get_pixel_format()) {
-        case Gray: channels = 1; break;
-        case RGB:  channels = 3; break;
-        case RGBA: channels = 4; break;
+        case PixelFormat::Gray : channels = 1; break;
+        case PixelFormat::RGB  : channels = 3; break;
+        case PixelFormat::RGBA : channels = 4; break;
         default:
             throw std::invalid_argument("unsupported image pixel format");
     }

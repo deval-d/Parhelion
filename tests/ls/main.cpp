@@ -22,8 +22,8 @@ void check_frame(
         }
     };
 
-    check("format", frame.get_pixel_format(), format);
-    check("layout", frame.get_frame_layout(), layout);
+    check("format", static_cast<int>(frame.get_pixel_format()), static_cast<int>(format));
+    check("layout", static_cast<int>(frame.get_frame_layout()), static_cast<int>(layout));
     check("width", frame.get_width(), width);
     check("height", frame.get_height(), height);
 
@@ -49,21 +49,21 @@ int gray8(void) {
     std::string file_in = "./files/gray_in.png";
     std::string file_out = "./files/gray_out.png";
 
-    return test(file_in, file_out, Gray, Interleaved, 1024, 1024); 
+    return test(file_in, file_out, PixelFormat::Gray, FrameLayout::Interleaved, 1024, 1024); 
 }
 
 int rgb8(void) { 
     std::string file_in = "./files/rgb_in.png";
     std::string file_out = "./files/rgb_out.png";
 
-    return test(file_in, file_out, RGB, Interleaved, 259, 194); 
+    return test(file_in, file_out, PixelFormat::RGB, FrameLayout::Interleaved, 259, 194); 
 }
 
 int rgba8(void) { 
     std::string file_in = "./files/rgba_in.png";
     std::string file_out = "./files/rgba_out.png";
 
-    return test(file_in, file_out, RGBA, Interleaved, 256, 256); 
+    return test(file_in, file_out, PixelFormat::RGBA, FrameLayout::Interleaved, 256, 256); 
 }
 
 int main(void) { 

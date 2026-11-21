@@ -21,8 +21,8 @@ void check_frame(
         }
     };
 
-    check("format", frame.get_pixel_format(), format);
-    check("layout", frame.get_frame_layout(), layout);
+    check("format", static_cast<int>(frame.get_pixel_format()), static_cast<int>(format));
+    check("layout", static_cast<int>(frame.get_frame_layout()), static_cast<int>(layout));
     check("width", frame.get_width(), width);
     check("height", frame.get_height(), height);
 
@@ -61,39 +61,39 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
         }
     }
 
-    Frame frame(width, height, format, Interleaved, interleaved);
+    Frame frame(width, height, format, FrameLayout::Interleaved, interleaved);
     convert_to_planar(frame);
-    check_frame(frame, format, Planar, width, height, planar);
+    check_frame(frame, format, FrameLayout::Planar, width, height, planar);
 
     convert_to_planar(frame);
-    check_frame(frame, format, Planar, width, height, planar);
+    check_frame(frame, format, FrameLayout::Planar, width, height, planar);
 
     convert_to_interleaved(frame);
-    check_frame(frame, format, Interleaved, width, height, interleaved);
+    check_frame(frame, format, FrameLayout::Interleaved, width, height, interleaved);
 
     convert_to_interleaved(frame);
-    check_frame(frame, format, Interleaved, width, height, interleaved);
+    check_frame(frame, format, FrameLayout::Interleaved, width, height, interleaved);
 
-    Frame other(width, height, format, Planar, planar);
+    Frame other(width, height, format, FrameLayout::Planar, planar);
     convert_to_interleaved(other);
-    check_frame(other, format, Interleaved, width, height, interleaved);
+    check_frame(other, format, FrameLayout::Interleaved, width, height, interleaved);
 }
 
 int gray8(void) {
-    test(Gray, 1, 3, 2);
-    test(Gray, 1, 13, 5);
+    test(PixelFormat::Gray, 1, 3, 2);
+    test(PixelFormat::Gray, 1, 13, 5);
     return 0;
 }
 
 int rgb8(void) {
-    test(RGB, 3, 3, 2);
-    test(RGB, 3, 13, 5);
+    test(PixelFormat::RGB, 3, 3, 2);
+    test(PixelFormat::RGB, 3, 13, 5);
     return 0;
 }
 
 int rgba8(void) {
-    test(RGBA, 4, 3, 2);
-    test(RGBA, 4, 13, 5);
+    test(PixelFormat::RGBA, 4, 3, 2);
+    test(PixelFormat::RGBA, 4, 13, 5);
     return 0;
 }
 

@@ -26,9 +26,9 @@ inline Frame image_load(const char* path) {
 
     PixelFormat format;
     switch (original_channels) {
-        case 1: format = Gray; break;
-        case 3: format = RGB;  break;
-        case 4: format = RGBA; break;
+        case 1: format = PixelFormat::Gray; break;
+        case 3: format = PixelFormat::RGB;  break;
+        case 4: format = PixelFormat::RGBA; break;
         default:
             throw std::runtime_error("unsupported image channel count");
     }
@@ -43,5 +43,5 @@ inline Frame image_load(const char* path) {
     std::vector<std::byte> buffer(w * h * channels);
     std::memcpy(buffer.data(), pixels.get(), buffer.size());
 
-    return Frame(w, h, format, Interleaved, std::move(buffer));
+    return Frame(w, h, format, FrameLayout::Interleaved, std::move(buffer));
 }

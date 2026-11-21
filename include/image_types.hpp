@@ -4,15 +4,16 @@
 #include <cstddef>
 #include <optional>
 #include <utility>
+#include <type_traits>
 #include <stdexcept>
 
-enum PixelFormat { 
+enum class PixelFormat { 
     Gray, 
     RGB, 
     RGBA
 }; 
 
-enum FrameLayout { 
+enum class FrameLayout { 
     Interleaved, 
     Planar
 }; 
@@ -65,6 +66,33 @@ public:
     PixelFormat get_pixel_format(void) const { return pixel_format; }
     FrameLayout get_frame_layout(void) const { return frame_layout; }
     std::span<T> get_span(void) const { return buf; }
+
+    FrameView<std::byte> channel_mut(std::size_t channel) const
+        requires std::is_same_v<T, std::byte>
+    {
+        if (frame_layout != FrameLayout::Planar)
+            throw std::invalid_argument("channel views require planar storage");
+
+        std::size_t channels;
+        switch (pixel_format) { 
+            case PixelFormat::Gray : channels = 1; break; 
+            case PixelFormat::RGB  : channels = 3; break; 
+            case PixelFormat::RGBA : channels = 4; break; 
+        }; 
+
+        if (channel >= channels)
+            throw std::out_of_range("channel is outside the frame");
+
+        std::size_t offset = channel * channel_stride.value();
+        std::size_t size = (h - 1) * row_stride + w;
+
+        return FrameView<std::byte>(
+            w, h,
+            row_stride, std::nullopt,
+            PixelFormat::Gray, FrameLayout::Planar,
+            buf.subspan(offset, size)
+        );
+    }
 }; 
 
 using FrameViewRef = FrameView<const std::byte>;
@@ -86,22 +114,25 @@ public:
         PixelFormat format,
         FrameLayout layout,
         std::vector<std::byte> buffer
-    ) noexcept :
+    ) :
         w(width),
         h(height), 
         pixel_format(format), 
         frame_layout(layout), 
         buf(std::move(buffer))
-    {} 
+    {
+        if (buf.size() != width * height * get_n_channels())
+            throw std::invalid_argument("frame dimensions don't match buffer");  
+    } 
 
     // getters 
     std::size_t get_width(void)  const { return w; }
     std::size_t get_height(void) const { return h; }
     std::size_t get_n_channels(void) const { 
         switch (pixel_format) { 
-            case (Gray) : return 1; 
-            case (RGB)  : return 3;
-            case (RGBA) : return 4; 
+            case PixelFormat::Gray : return 1; 
+            case PixelFormat::RGB  : return 3;
+            case PixelFormat::RGBA : return 4; 
         }
     }
     PixelFormat get_pixel_format(void) const { return pixel_format; }
@@ -109,21 +140,32 @@ public:
 
     // setters 
     void set_frame_layout(FrameLayout layout) { frame_layout = layout; }
+    /// WARNING: any previously obtained `FrameView`s would become invalid
     void replace_buf(std::vector<std::byte>&& new_buf) {
         buf = std::move(new_buf); 
     }
 
     /// immutable full view 
     FrameViewRef view_ref(void) const {
-        std::optional<std::size_t> channel_stride = 
-            (frame_layout == Interleaved) 
-            ? std::nullopt 
-            : std::optional<std::size_t>(w * h);  
+        std::size_t row_stride; 
+        std::optional<std::size_t> channel_stride;
+        switch (frame_layout) { 
+            case (FrameLayout::Interleaved): { 
+                channel_stride = std::nullopt;
+                row_stride = w * get_n_channels();
+                break;
+            }
+            case (FrameLayout::Planar): { 
+                channel_stride = w * h;
+                row_stride = w; 
+                break;
+            }
+        }
 
         FrameViewRef view(
             w,
             h,
-            w * get_n_channels(),
+            row_stride,
             channel_stride, 
             pixel_format,
             frame_layout,
@@ -136,17 +178,26 @@ public:
         return view; 
     }
 
-    // mutable full view 
-    FrameViewMut view_mut(void) { 
-        std::optional<std::size_t> channel_stride = 
-            (frame_layout == Interleaved) 
-            ? std::nullopt 
-            : std::optional<std::size_t>(w * h);  
+    /// mutable full view
+    FrameViewMut view_mut(void) {
+        std::size_t row_stride; 
+        std::optional<std::size_t> channel_stride;
+        switch (frame_layout) { 
+            case FrameLayout::Interleaved:  
+                channel_stride = std::nullopt;
+                row_stride = w * get_n_channels();
+                break;
+
+            case FrameLayout::Planar: 
+                channel_stride = w * h;
+                row_stride = w; 
+                break;
+        }
 
         FrameViewMut view(
             w,
             h,
-            w * get_n_channels(),
+            row_stride,
             channel_stride, 
             pixel_format,
             frame_layout,
@@ -158,7 +209,7 @@ public:
           
         return view; 
     }
-            
+ 
     /// immutable subview 
     FrameViewRef view_ref(
         Coordinate xy,
@@ -181,20 +232,19 @@ public:
         std::size_t row_stride;
         std::optional<std::size_t> channel_stride; 
         switch (frame_layout) { 
-            case (Interleaved): { 
+            case FrameLayout::Interleaved: 
                 row_stride = w * channels;
                 channel_stride = std::nullopt; 
                 beg_idx = xy.x * channels + xy.y * row_stride;
                 end_idx = (xy.x + width) * channels + (xy.y + height - 1) * row_stride; 
                 break; 
-            }
-            case (Planar): {
+        
+            case FrameLayout::Planar: 
                 row_stride = w; 
                 channel_stride = w * h; 
                 beg_idx = xy.x + xy.y * row_stride;
                 end_idx = xy.x + width + (xy.y + height - 1) * row_stride + *channel_stride * (channels - 1); 
                 break;
-            }
         }
  
         FrameViewRef view(
@@ -229,24 +279,25 @@ public:
             throw std::out_of_range("view is outside the frame");
 
         std::size_t channels = get_n_channels(); 
-        std::size_t row_stride = w * channels;
 
         std::size_t beg_idx;
         std::size_t end_idx; 
+        std::size_t row_stride;
         std::optional<std::size_t> channel_stride; 
         switch (frame_layout) { 
-            case (Interleaved): { 
+            case FrameLayout::Interleaved:  
+                row_stride = w * channels; 
                 channel_stride = std::nullopt;  
                 beg_idx = xy.x * channels + xy.y * row_stride;
                 end_idx = (xy.x + width) * channels + (xy.y + height - 1) * row_stride; 
                 break; 
-            }
-            case (Planar): {
+        
+            case FrameLayout::Planar: 
+                row_stride = w; 
                 channel_stride = w * h; 
                 beg_idx = xy.x + xy.y * row_stride;
                 end_idx = xy.x + width + (xy.y + height - 1) * row_stride + *channel_stride * (channels - 1); 
                 break;
-            }
         }
  
         FrameViewMut view(
