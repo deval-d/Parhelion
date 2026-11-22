@@ -1,0 +1,30 @@
+Single thread, preallocated buffers, median of 31 samples (us)
+Format Size         Conversion          Parhelion        vImage   Speedup
+RGB8   64x64        AoS -> SoA              0.224         0.618     2.764
+RGB8   64x64        SoA -> AoS              0.195         0.502     2.572
+RGBA8  64x64        AoS -> SoA              0.232         0.661     2.847
+RGBA8  64x64        SoA -> AoS              0.221         0.772     3.488
+RGB8   256x256      AoS -> SoA              1.815        12.986     7.154
+RGB8   256x256      SoA -> AoS              1.703         6.238     3.662
+RGBA8  256x256      AoS -> SoA              2.813        10.771     3.829
+RGBA8  256x256      SoA -> AoS              2.541         8.679     3.416
+RGB8   640x480      AoS -> SoA             10.084        61.250     6.074
+RGB8   640x480      SoA -> AoS              9.875        31.750     3.215
+RGBA8  640x480      AoS -> SoA             14.479        50.000     3.453
+RGBA8  640x480      SoA -> AoS             13.438        39.750     2.958
+RGB8   1280x720     AoS -> SoA             26.084       180.208     6.909
+RGB8   1280x720     SoA -> AoS             25.500        88.834     3.484
+RGBA8  1280x720     AoS -> SoA             39.375       149.500     3.797
+RGBA8  1280x720     SoA -> AoS             36.521       120.625     3.303
+RGB8   1920x1080    AoS -> SoA             50.271       418.938     8.334
+RGB8   1920x1080    SoA -> AoS             50.375       206.792     4.105
+RGBA8  1920x1080    AoS -> SoA            102.688       355.146     3.459
+RGBA8  1920x1080    SoA -> AoS             76.875       282.562     3.676
+RGB8   2560x1440    AoS -> SoA            171.042       766.562     4.482
+RGB8   2560x1440    SoA -> AoS            124.354       370.688     2.981
+RGBA8  2560x1440    AoS -> SoA            429.625      1051.354     2.447
+RGBA8  2560x1440    SoA -> AoS            375.146       513.896     1.370
+RGB8   3840x2160    AoS -> SoA           1233.833      1783.250     1.445
+RGB8   3840x2160    SoA -> AoS           1032.271       859.792     0.833
+RGBA8  3840x2160    AoS -> SoA           1347.396      1675.833     1.244
+RGBA8  3840x2160    SoA -> AoS           1357.917      1139.312     0.839
