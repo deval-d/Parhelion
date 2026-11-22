@@ -18,7 +18,6 @@ namespace {
         svuint8x4_t vx4 = svcreate4_u8(v, v, v, v); 
         
         std::size_t i = 0; 
-
         svcount_t pg = svptrue_c8(); 
         for (; i < n_full_4xVGx4; i += n_4xVGx4) { 
             svst1_u8_x4(pg, data + i, vx4);
@@ -81,10 +80,8 @@ void fill(FrameViewMut frame, Color::Gray color) {
     if (width == 0 || height == 0)
         return;
 
-    if (
-        color.v == std::byte(0) ||
-        (packed ? width * height < 2 * 1024 : width < 256)
-    ) {
+    if (color.v == std::byte(0) ||
+        (packed ? width * height < 2 * 1024 : width < 256)) {
         fill_memset(frame, color);
         return;
     }

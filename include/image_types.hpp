@@ -63,6 +63,13 @@ public:
     std::size_t get_height(void) const { return h; } 
     std::size_t get_row_stride(void) const { return row_stride; }
     std::optional<std::size_t> get_channel_stride(void) const { return channel_stride; }
+    std::size_t get_n_channels(void) const { 
+        switch (pixel_format) { 
+            case PixelFormat::Gray : return 1; 
+            case PixelFormat::RGB  : return 3;
+            case PixelFormat::RGBA : return 4; 
+        }
+    }
     PixelFormat get_pixel_format(void) const { return pixel_format; }
     FrameLayout get_frame_layout(void) const { return frame_layout; }
     std::span<T> get_span(void) const { return buf; }
@@ -88,7 +95,7 @@ public:
 
         return FrameView<std::byte>(
             w, h,
-            row_stride, std::nullopt,
+            row_stride, w * h,
             PixelFormat::Gray, FrameLayout::Planar,
             buf.subspan(offset, size)
         );
