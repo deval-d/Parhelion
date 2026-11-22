@@ -88,12 +88,18 @@ int gray8(void) {
 int rgb8(void) {
     test(PixelFormat::RGB, 3, 3, 2);
     test(PixelFormat::RGB, 3, 13, 5);
+    for (std::size_t width : {63, 64, 65, 255, 256, 257, 1023, 1024, 1025, 2049})
+        test(PixelFormat::RGB, 3, width, 1);
+    test(PixelFormat::RGB, 3, 17, 65);
     return 0;
 }
 
 int rgba8(void) {
     test(PixelFormat::RGBA, 4, 3, 2);
     test(PixelFormat::RGBA, 4, 13, 5);
+    for (std::size_t width : {63, 64, 65, 255, 256, 257, 1023, 1024, 1025, 2049})
+        test(PixelFormat::RGBA, 4, width, 1);
+    test(PixelFormat::RGBA, 4, 17, 65);
     return 0;
 }
 
