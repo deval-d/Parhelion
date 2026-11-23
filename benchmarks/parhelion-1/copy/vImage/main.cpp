@@ -101,10 +101,8 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
         }
     };
 
-    // Check both phases independently, including the pixels outside a cropped view.
     for (int phase : {0, 1}) {
         auto expected = original;
-        // Copy into a different pattern so a missing copy cannot pass.
         std::fill(expected.begin(), expected.end(), std::byte{171});
         for (std::size_t c = 0; c < (channels); ++c) {
             for (std::size_t y = xy.y; y < xy.y + height; ++y) {

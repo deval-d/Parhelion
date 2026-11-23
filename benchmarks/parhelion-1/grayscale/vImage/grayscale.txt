@@ -1,0 +1,32 @@
+Weights 0.2126/0.7152/0.0722; alpha ignored; Parhelion truncates
+vImageMatrixMultiply_Planar8; planar input; integer coefficients /10000, zero post-bias
+Single thread, preallocated buffers, median of 31 samples (us)
+Format Size         View                       Parhelion        vImage   Speedup
+RGB8   64x64        packed                         1.678         1.867     1.113
+RGBA8  64x64        packed                         1.690         1.866     1.104
+RGB8   64x64        cropped                       15.156         1.868     0.123
+RGBA8  64x64        cropped                       15.115         1.865     0.123
+RGB8   256x256      packed                        24.037        29.594     1.231
+RGBA8  256x256      packed                        24.039        29.508     1.228
+RGB8   256x256      cropped                       64.434        30.472     0.473
+RGBA8  256x256      cropped                       62.956        29.831     0.474
+RGB8   640x480      packed                       112.959       131.770     1.167
+RGBA8  640x480      packed                       112.979       131.292     1.162
+RGB8   640x480      cropped                      209.500       134.188     0.641
+RGBA8  640x480      cropped                      209.792       133.562     0.637
+RGB8   1280x720     packed                       336.604       387.396     1.151
+RGBA8  1280x720     packed                       338.000       388.021     1.148
+RGB8   1280x720     cropped                      453.938       391.896     0.863
+RGBA8  1280x720     cropped                      453.604       396.750     0.875
+RGB8   1920x1080    packed                       883.000       906.958     1.027
+RGBA8  1920x1080    packed                      1493.062      1473.354     0.987
+RGB8   1920x1080    cropped                     1011.771       896.229     0.886
+RGBA8  1920x1080    cropped                      976.438       892.833     0.914
+RGB8   2560x1440    packed                      1579.542      1555.062     0.985
+RGBA8  2560x1440    packed                      1516.625      1557.167     1.027
+RGB8   2560x1440    cropped                     1705.792      1569.125     0.920
+RGBA8  2560x1440    cropped                     1652.917      1565.542     0.947
+RGB8   3840x2160    packed                      3205.500      3507.875     1.094
+RGBA8  3840x2160    packed                      3163.438      3499.479     1.106
+RGB8   3840x2160    cropped                     3810.750      3557.646     0.934
+RGBA8  3840x2160    cropped                     3627.062      3525.062     0.972

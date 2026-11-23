@@ -1,5 +1,4 @@
 #include <cstdint>
-// Benchmark the current internal kernels with preallocated output buffers.
 #include "../../../../src/AoS_SoA.cpp"
 #include <opencv2/core.hpp>
 #include <algorithm>
@@ -108,7 +107,6 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
     auto library_split = [&] { cv::split(pixels, channel); };
     auto library_merge = [&] { cv::merge(channel, channels, pixels); };
 
-    // Check both implementations before timing, including each channel's order.
     for (bool ours : {true, false}) {
         std::fill(planes_mut.get_span().begin(), planes_mut.get_span().end(), std::byte{0});
         if (ours) split();

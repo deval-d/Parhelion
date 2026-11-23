@@ -1,5 +1,4 @@
 #include <cstdint>
-// Benchmark the current internal kernels with preallocated output buffers.
 #include "../../../../src/AoS_SoA.cpp"
 #include <Accelerate/Accelerate.h>
 #include <algorithm>
@@ -104,7 +103,6 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
         channel[c] = {planes_mut.get_span().data() + c * n, height, width, width};
 
     auto library_split = [&] {
-        // ARGB routines preserve byte positions, so channel[0..3] holds RGBA here.
         const auto error = channels == 3
             ? vImageConvert_RGB888toPlanar8(&pixels, &channel[0], &channel[1], &channel[2], kvImageDoNotTile)
             : vImageConvert_ARGB8888toPlanar8(&pixels, &channel[0], &channel[1], &channel[2], &channel[3], kvImageDoNotTile);
@@ -119,7 +117,6 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
             throw std::runtime_error("vImage merge failed");
     };
 
-    // Check both implementations before timing, including each channel's order.
     for (bool ours : {true, false}) {
         std::fill(planes_mut.get_span().begin(), planes_mut.get_span().end(), std::byte{0});
         if (ours) split();

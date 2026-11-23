@@ -1,0 +1,32 @@
+Weights 0.2126/0.7152/0.0722; alpha ignored; Parhelion truncates
+OpenCV cv::transform; interleaved input prepared outside timing; nearest rounding, tolerance 1
+Single thread, preallocated buffers, median of 31 samples (us)
+Format Size         View                       Parhelion        OpenCV   Speedup
+RGB8   64x64        packed                         1.688         2.867     1.699
+RGBA8  64x64        packed                         1.684         9.962     5.915
+RGB8   64x64        cropped                       15.477         2.941     0.190
+RGBA8  64x64        cropped                       15.564        11.025     0.708
+RGB8   256x256      packed                        24.038        43.903     1.826
+RGBA8  256x256      packed                        24.052       157.697     6.557
+RGB8   256x256      cropped                       64.422        44.205     0.686
+RGBA8  256x256      cropped                       64.382       161.894     2.515
+RGB8   640x480      packed                       113.042       204.645     1.810
+RGBA8  640x480      packed                       112.958       737.167     6.526
+RGB8   640x480      cropped                      211.708       205.500     0.971
+RGBA8  640x480      cropped                      211.688       744.958     3.519
+RGB8   1280x720     packed                       351.312       616.375     1.754
+RGBA8  1280x720     packed                       372.417      2217.916     5.955
+RGB8   1280x720     cropped                      468.312       618.167     1.320
+RGBA8  1280x720     cropped                      478.562      2229.146     4.658
+RGB8   1920x1080    packed                       867.938      1392.312     1.604
+RGBA8  1920x1080    packed                       931.917      4981.188     5.345
+RGB8   1920x1080    cropped                     1180.562      1408.146     1.193
+RGBA8  1920x1080    cropped                     1189.000      5005.979     4.210
+RGB8   2560x1440    packed                      1431.562      2468.500     1.724
+RGBA8  2560x1440    packed                      1426.458      8859.125     6.211
+RGB8   2560x1440    cropped                     1638.083      2486.416     1.518
+RGBA8  2560x1440    cropped                     1709.896      8897.292     5.203
+RGB8   3840x2160    packed                      3232.625      5581.417     1.727
+RGBA8  3840x2160    packed                      3301.541     19983.562     6.053
+RGB8   3840x2160    cropped                     3411.083      5577.021     1.635
+RGBA8  3840x2160    cropped                     3457.291     19961.042     5.774

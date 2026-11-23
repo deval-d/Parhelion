@@ -100,7 +100,6 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
         }
     };
 
-    // Check both phases independently, including the pixels outside a cropped view.
     for (int phase : {0, 1}) {
         auto expected = original;
         for (std::size_t c = 0; c < (channels == 4 ? 3 : channels); ++c) {

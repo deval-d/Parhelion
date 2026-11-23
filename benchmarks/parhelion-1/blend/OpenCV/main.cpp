@@ -1,0 +1,155 @@
+#include "image_types.hpp"
+#include <opencv2/core.hpp>
+#include <algorithm>
+#include <array>
+#include <chrono>
+#include <cstdint>
+#include <iomanip>
+#include <iostream>
+#include <string>
+
+void blend(FrameViewRef src1, FrameViewRef src2, FrameViewMut dst, float alpha);
+
+using Clock = std::chrono::steady_clock;
+
+template <typename Convert>
+double measure(Convert convert, int repeats) {
+    const auto start = Clock::now();
+    for (int i = 0; i < repeats; ++i)
+        convert(i);
+    const auto end = Clock::now();
+    return std::chrono::duration<double, std::micro>(end - start).count() / repeats;
+}
+
+template <typename Parhelion, typename Library>
+void compare(
+    const char* format,
+    std::size_t width,
+    std::size_t height,
+    const char* label,
+    Parhelion parhelion,
+    Library library
+) {
+    std::array<double, 31> ours;
+    std::array<double, 31> theirs;
+    const int repeats = width * height <= 65536 ? 128 : 2;
+
+    for (int i = -5; i < 31; ++i) {
+        double a;
+        double b;
+        if (i % 2 == 0) {
+            a = measure(parhelion, repeats);
+            b = measure(library, repeats);
+        } else {
+            b = measure(library, repeats);
+            a = measure(parhelion, repeats);
+        }
+        if (i >= 0) {
+            ours[i] = a;
+            theirs[i] = b;
+        }
+    }
+
+    std::sort(ours.begin(), ours.end());
+    std::sort(theirs.begin(), theirs.end());
+    const std::string size = std::to_string(width) + "x" + std::to_string(height);
+    std::cout << std::left << std::setw(7) << format
+              << std::setw(13) << size << std::setw(22) << label
+              << std::right << std::setw(14) << ours[15]
+              << std::setw(14) << theirs[15]
+              << std::setw(10) << theirs[15] / ours[15] << '\n';
+}
+
+void check(const Frame& frame, const std::vector<std::byte>& expected) {
+    const auto pixels = frame.view_ref().get_span();
+    for (std::size_t i = 0; i < expected.size(); ++i) {
+        if (pixels[i] != expected[i]) {
+            std::cerr << "byte " << i
+                      << ": received " << std::to_integer<int>(pixels[i])
+                      << ", expected " << std::to_integer<int>(expected[i]) << '\n';
+            throw std::runtime_error("benchmark correctness check failed");
+        }
+    }
+}
+
+void test(PixelFormat format, std::size_t channels, std::size_t width, std::size_t height, bool cropped) {
+    const std::size_t frame_width = cropped ? width + 6 : width;
+    const std::size_t frame_height = cropped ? height + 4 : height;
+    const Coordinate xy(cropped ? 3 : 0, cropped ? 2 : 0);
+    const std::size_t n = frame_width * frame_height;
+    std::vector<std::byte> a(n * channels);
+    std::vector<std::byte> b(n * channels);
+    std::vector<std::byte> original(n * channels, std::byte{79});
+    for (std::size_t i = 0; i < a.size(); ++i) {
+        a[i] = static_cast<std::byte>(4 * ((i * 7 + i / 251) % 64));
+        b[i] = static_cast<std::byte>(4 * ((i * 13 + i / 127 + 17) % 64));
+    }
+
+    Frame source1(frame_width, frame_height, format, FrameLayout::Planar, a);
+    Frame source2(frame_width, frame_height, format, FrameLayout::Planar, b);
+    Frame frame(frame_width, frame_height, format, FrameLayout::Planar, original);
+    const auto src1 = cropped ? source1.view_ref(xy, width, height) : source1.view_ref();
+    const auto src2 = cropped ? source2.view_ref(xy, width, height) : source2.view_ref();
+    const auto view = cropped ? frame.view_mut(xy, width, height) : frame.view_mut();
+    auto pixels = frame.view_mut().get_span();
+    cv::Mat src1_channel[4];
+    cv::Mat src2_channel[4];
+    cv::Mat channel[4];
+    for (std::size_t c = 0; c < channels; ++c) {
+        src1_channel[c] = cv::Mat(static_cast<int>(height), static_cast<int>(width), CV_8UC1,
+            const_cast<std::byte*>(src1.get_span().data()) + c * n, src1.get_row_stride());
+        src2_channel[c] = cv::Mat(static_cast<int>(height), static_cast<int>(width), CV_8UC1,
+            const_cast<std::byte*>(src2.get_span().data()) + c * n, src2.get_row_stride());
+        channel[c] = cv::Mat(static_cast<int>(height), static_cast<int>(width), CV_8UC1,
+            view.get_span().data() + c * n, view.get_row_stride());
+    }
+    auto ours = [&](int) { blend(src1, src2, view, 0.25f); };
+    auto theirs = [&](int) {
+        for (std::size_t c = 0; c < (channels == 4 ? 3 : channels); ++c)
+            cv::addWeighted(src1_channel[c], 0.25, src2_channel[c], 0.75, 0.0, channel[c]);
+    };
+
+    auto expected = original;
+    for (std::size_t c = 0; c < (channels == 4 ? 3 : channels); ++c) {
+        for (std::size_t y = xy.y; y < xy.y + height; ++y) {
+            for (std::size_t x = xy.x; x < xy.x + width; ++x) {
+                const std::size_t index = c * n + y * frame_width + x;
+                const int value = (std::to_integer<int>(a[index]) + 3 * std::to_integer<int>(b[index])) / 4;
+                expected[index] = static_cast<std::byte>(value);
+            }
+        }
+    }
+    ours(0);
+    check(frame, expected);
+    std::copy(original.begin(), original.end(), pixels.begin());
+    theirs(0);
+    check(frame, expected);
+    const char* name = channels == 1 ? "Gray8" : channels == 3 ? "RGB8" : "RGBA8";
+    compare(name, width, height, cropped ? "cropped" : "packed", ours, theirs);
+    check(frame, expected);
+    check(source1, a);
+    check(source2, b);
+}
+
+int main(void) {
+    cv::setNumThreads(1);
+    std::cout << "25% src1 + 75% src2; inputs divisible by 4; alpha preserved; cv::addWeighted\n";
+    std::cout << "Single thread, preallocated buffers, median of 31 samples (us)\n"
+              << std::left << std::setw(7) << "Format"
+              << std::setw(13) << "Size" << std::setw(22) << "View"
+              << std::right << std::setw(14) << "Parhelion"
+              << std::setw(14) << "OpenCV" << std::setw(10) << "Speedup" << '\n'
+              << std::fixed << std::setprecision(3);
+    for (Coordinate size : {
+        Coordinate(64, 64), Coordinate(256, 256), Coordinate(640, 480),
+        Coordinate(1280, 720), Coordinate(1920, 1080),
+        Coordinate(2560, 1440), Coordinate(3840, 2160)
+    }) {
+        for (bool cropped : {false, true}) {
+            test(PixelFormat::Gray, 1, size.x, size.y, cropped);
+            test(PixelFormat::RGB, 3, size.x, size.y, cropped);
+            test(PixelFormat::RGBA, 4, size.x, size.y, cropped);
+        }
+    }
+    return 0;
+}

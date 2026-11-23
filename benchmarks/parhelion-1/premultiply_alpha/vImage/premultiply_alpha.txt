@@ -1,0 +1,32 @@
+Parhelion NEON planar RGBA, integer rounding to nearest; library rounds to nearest; alpha preserved
+vImagePremultiplyData_Planar8 and RGBA8888; layouts prepared outside timing
+Single thread, preallocated, buffers restored outside each timed call; median of 31 samples (us)
+Format Size         View                       Parhelion        vImage   Speedup
+RGBA8  64x64        packed vs planar               0.768         2.153     2.803
+RGBA8  64x64        packed vs RGBA                 0.767         1.621     2.113
+RGBA8  64x64        cropped vs planar              0.773         0.882     1.141
+RGBA8  64x64        cropped vs RGBA                0.775         1.623     2.094
+RGBA8  256x256      packed vs planar              11.926        13.446     1.127
+RGBA8  256x256      packed vs RGBA                11.912        25.723     2.159
+RGBA8  256x256      cropped vs planar             11.953        13.729     1.148
+RGBA8  256x256      cropped vs RGBA               11.953        25.722     2.152
+RGBA8  640x480      packed vs planar              55.479        62.334     1.124
+RGBA8  640x480      packed vs RGBA                55.500       121.104     2.182
+RGBA8  640x480      cropped vs planar             55.541        63.645     1.146
+RGBA8  640x480      cropped vs RGBA               55.542       119.917     2.159
+RGBA8  1280x720     packed vs planar             167.209       188.605     1.128
+RGBA8  1280x720     packed vs RGBA               167.562       360.146     2.149
+RGBA8  1280x720     cropped vs planar            167.354       192.375     1.150
+RGBA8  1280x720     cropped vs RGBA              167.417       361.708     2.161
+RGBA8  1920x1080    packed vs planar             383.520       438.875     1.144
+RGBA8  1920x1080    packed vs RGBA               384.604       820.771     2.134
+RGBA8  1920x1080    cropped vs planar            378.020       441.062     1.167
+RGBA8  1920x1080    cropped vs RGBA              378.646       822.000     2.171
+RGBA8  2560x1440    packed vs planar             675.708       778.562     1.152
+RGBA8  2560x1440    packed vs RGBA               674.542      1491.562     2.211
+RGBA8  2560x1440    cropped vs planar            671.896       790.854     1.177
+RGBA8  2560x1440    cropped vs RGBA              673.125      1471.917     2.187
+RGBA8  3840x2160    packed vs planar            1546.000      1818.916     1.177
+RGBA8  3840x2160    packed vs RGBA              1538.146      3312.708     2.154
+RGBA8  3840x2160    cropped vs planar           1551.750      1860.791     1.199
+RGBA8  3840x2160    cropped vs RGBA             1547.708      3362.917     2.173
