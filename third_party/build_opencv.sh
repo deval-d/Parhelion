@@ -20,7 +20,7 @@ fi
 
 "$cmake_bin" -S "$third_party/opencv" -B "$third_party/opencv-build" \
     -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64 \
-    -DBUILD_LIST=core -DBUILD_SHARED_LIBS=ON \
+    -DBUILD_LIST=core,imgproc -DBUILD_SHARED_LIBS=ON \
     -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_EXAMPLES=OFF \
     -DBUILD_opencv_apps=OFF -DBUILD_JAVA=OFF -DBUILD_opencv_python3=OFF \
     -DWITH_IPP=OFF -DWITH_ITT=OFF -DWITH_OPENCL=OFF \
