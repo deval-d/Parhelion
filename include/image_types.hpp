@@ -100,6 +100,31 @@ public:
             buf.subspan(offset, size)
         );
     }
+
+    FrameView<const std::byte> channel_ref(std::size_t channel) const { 
+        if (frame_layout != FrameLayout::Planar)
+            throw std::invalid_argument("channel views require planar storage");
+
+        std::size_t channels;
+        switch (pixel_format) {
+            case PixelFormat::Gray : channels = 1; break;
+            case PixelFormat::RGB  : channels = 3; break;
+            case PixelFormat::RGBA : channels = 4; break; 
+        }
+
+        if (channel >= channels)
+            throw std::out_of_range("channel is outside the frame");
+
+        std::size_t offset = channel * channel_stride.value();
+        std::size_t size = (h - 1) * row_stride + w; 
+
+        return FrameView<const std::byte>(
+            w, h,
+            row_stride, w * h,
+            PixelFormat::Gray, FrameLayout::Planar,
+            buf.subspan(offset, size)
+        ); 
+    }
 }; 
 
 using FrameViewRef = FrameView<const std::byte>;
