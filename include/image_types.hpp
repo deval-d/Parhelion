@@ -138,6 +138,17 @@ private:
     FrameLayout frame_layout;
     std::vector<std::byte> buf; 
 
+    void set_frame_layout(FrameLayout layout) { 
+        frame_layout = layout; 
+    }
+    void replace_buf(std::vector<std::byte>&& new_buf) {
+        buf = std::move(new_buf); 
+    }
+
+    friend void convert_to_planar(Frame& frame);
+    friend void convert_to_interleaved(Frame& frame); 
+
+
 public:
     /// constructor 
     explicit Frame(
@@ -153,6 +164,13 @@ public:
         frame_layout(layout), 
         buf(std::move(buffer))
     {
+        if (width == 0 || height == 0) 
+            throw std::invalid_argument("invalid frame dimensions");
+
+        if (width > SIZE_MAX / height || 
+            width * height > SIZE_MAX / get_n_channels())
+            throw std::overflow_error("frame size overflow");  
+
         if (buf.size() != width * height * get_n_channels())
             throw std::invalid_argument("frame dimensions don't match buffer");  
     } 
@@ -169,13 +187,6 @@ public:
     }
     PixelFormat get_pixel_format(void) const { return pixel_format; }
     FrameLayout get_frame_layout(void) const { return frame_layout; }
-
-    // setters 
-    void set_frame_layout(FrameLayout layout) { frame_layout = layout; }
-    /// WARNING: any previously obtained `FrameView`s would become invalid
-    void replace_buf(std::vector<std::byte>&& new_buf) {
-        buf = std::move(new_buf); 
-    }
 
     /// immutable full view 
     FrameViewRef view_ref(void) const {
