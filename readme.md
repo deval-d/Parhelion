@@ -1,5 +1,5 @@
-Parhelion is a C++ image-processing engine planned for NEON/SME2 CPU kernels, multithreading, Metal GPU acceleration, and kernel fusion.
-Super early stages right now.
+Parhelion is an early-stage C++ image-processing library with NEON/SME2 CPU kernels,
+threaded pointwise operations, and Metal pointwise kernels on macOS.
 
 ## build and test
 
@@ -15,9 +15,32 @@ ctest --preset release
 
 The library is `build/release/libparhelion.a`. Public kernel headers are
 `parhelion-1.hpp` and `parhelion-2.hpp`; layout conversion and image i/o have separate
-headers in `include/`. 
+headers in `include/`.
 
 The default architecture flag is `-march=armv8-a+sme2`.
+
+## threading and metal
+
+Include `parallel-parhelion-1.hpp` to run pointwise operations with a reusable pool:
+
+```cpp
+ThreadPool pool(8);
+parallel_brighten(pool, frame.view_mut(), 20);
+```
+
+The wrappers internally choose how many tasks to submit and run small jobs on the caller.
+
+On macOS, include `metal-parhelion-1.hpp` to use a reusable Metal context:
+
+```cpp
+MetalContext gpu;
+MetalFrame image(gpu, 1920, 1080, PixelFormat::RGBA, FrameLayout::Planar);
+fill(image.view_mut(), Color::RGBA{std::byte{40}, std::byte{80}, std::byte{120}, std::byte{255}});
+metal_brighten(gpu, image, 20);
+```
+
+CPU views and Metal share the image's storage. Metal calls wait for completion before
+returning. Passing an ordinary `FrameView` to Metal uses staging copies.
 
 ## benchmarks
 
@@ -43,3 +66,7 @@ brightness, Gaussian blur, and conversion back, including allocations and stage 
 
 Apple builds also enable Accelerate/vImage comparisons. Disable either backend with
 `-DPARHELION_BENCHMARK_OPENCV=OFF` or `-DPARHELION_BENCHMARK_VIMAGE=OFF`.
+
+See [threading](benchmarks/threading) and [Metal](benchmarks/metal) for per-kernel
+comparisons. Run `./build/benchmarks/benchmarks/parhelion_bench_metal_shared` to compare
+serial CPU, threaded CPU, staged Metal, and shared Metal.
