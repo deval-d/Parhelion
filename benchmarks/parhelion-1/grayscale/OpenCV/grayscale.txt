@@ -1,5 +1,4 @@
-Weights 0.2126/0.7152/0.0722; alpha ignored; Parhelion truncates
-OpenCV cv::transform; interleaved input prepared outside timing; nearest rounding, tolerance 1
+interleaved input prepared outside timing
 Single thread, preallocated buffers, median of 31 samples (us)
 Format Size         View                       Parhelion        OpenCV   Speedup
 RGB8   64x64        packed                         1.688         2.867     1.699

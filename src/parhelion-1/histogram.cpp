@@ -1,6 +1,8 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <arm_sve.h>
 #include <array>
+
+namespace {
 
 inline svuint64x4_t add4(
     svbool_t pu,
@@ -124,6 +126,8 @@ std::array<std::uint64_t, 256> histogram_view(FrameViewRef frame) {
 
     return histogram_channel(data, width, height, stride);
 }
+
+} // namespace
 
 std::array<std::uint64_t, 256> histogram_gray(FrameViewRef frame) {
     if (frame.get_frame_layout() != FrameLayout::Planar)

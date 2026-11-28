@@ -1,8 +1,10 @@
-#include "image_types.hpp" 
+#include "parhelion-1.hpp"
 #include <arm_sve.h>
 #include <utility>
 #include <algorithm>
 #include <array>
+
+namespace {
 
 std::pair<uint8_t, uint8_t> global_min_max_buffer(
     const std::uint8_t *data,
@@ -80,6 +82,8 @@ std::pair<uint8_t, uint8_t> min_max_channel(FrameViewRef frame) {
     }
     return { minf, maxf };
 }
+
+} // namespace
 
 std::pair<std::array<uint8_t, 3>, std::array<uint8_t, 3>> minmax_per_channel(FrameViewRef frame) {
     if (frame.get_frame_layout() != FrameLayout::Planar)

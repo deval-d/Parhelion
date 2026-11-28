@@ -1,11 +1,6 @@
-#include "image_types.hpp"
-#include "color_types.hpp"
+#include "parhelion-1.hpp"
 #include <iostream>
 #include <stdexcept>
-
-void fill(FrameViewMut frame, Color::Gray color);
-void fill(FrameViewMut frame, Color::RGB color);
-void fill(FrameViewMut frame, Color::RGBA color);
 
 void check_frame(const Frame& frame, const std::vector<std::byte>& expected) {
     const auto pixels = frame.view_ref().get_span();

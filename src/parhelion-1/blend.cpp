@@ -1,7 +1,9 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <arm_sme.h>
 #include <arm_sve.h>
 #include <cmath>
+
+namespace {
 
 inline void blend_buffer(
     float alpha,
@@ -297,7 +299,6 @@ inline void blend_buffer(
     svst1b_u32(p3, dst + k + 3 * svl, svget4_u32(u3, 3));
 }
 
-
 __arm_locally_streaming __arm_new("za")
 void blend_channel(
     FrameViewRef src1,
@@ -337,6 +338,8 @@ void blend_channel(
         );
     }
 }
+
+} // namespace
 
 void blend(
     FrameViewRef src1,

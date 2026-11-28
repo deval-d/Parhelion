@@ -1,11 +1,8 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <cmath>
 #include <iostream>
 #include <limits>
 #include <stdexcept>
-
-void blend(FrameViewRef src1, FrameViewRef src2, FrameViewMut dst, float alpha);
-void blend(FrameViewRef src1, FrameViewRef src2, FrameViewMut dst, float r_alpha, float g_alpha, float b_alpha);
 
 void check_frame(const Frame& frame, const std::vector<std::byte>& expected) {
     const auto pixels = frame.view_ref().get_span();

@@ -1,4 +1,4 @@
-#include "image_types.hpp"
+#include "parhelion-2.hpp"
 #include <arm_neon.h>
 #include <algorithm>
 #include <cstdint>
@@ -7,6 +7,8 @@
 #include <functional>
 #include <stdexcept>
 #include <vector>
+
+namespace {
 
 template <std::size_t radius>
 inline uint16x8_t box_blur_sum(uint16x8_t r0, uint16x8_t r1, uint16x8_t r2) {
@@ -150,6 +152,8 @@ void box_blur_channels(FrameViewRef src, FrameViewMut dst) {
         }
     }
 }
+
+} // namespace
 
 void box_blur(FrameViewRef src, FrameViewMut dst, std::size_t radius) {
     if (src.get_frame_layout() != FrameLayout::Planar ||

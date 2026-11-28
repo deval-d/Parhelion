@@ -1,4 +1,4 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <opencv2/core.hpp>
 #include <algorithm>
 #include <array>
@@ -7,8 +7,6 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-
-void affine(FrameViewMut frame, float alpha, float beta);
 
 using Clock = std::chrono::steady_clock;
 
@@ -121,7 +119,6 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
 
 int main(void) {
     cv::setNumThreads(1);
-    std::cout << "Alternating 2*x+8 / 0.5*x-4 on even pixels; alpha preserved\n";
     std::cout << "Single thread, preallocated buffers, median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"

@@ -1,12 +1,9 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <algorithm>
 #include <array>
 #include <iostream>
 #include <stdexcept>
 #include <utility>
-
-std::pair<uint8_t, uint8_t> minmax_global(FrameViewRef frame);
-std::pair<std::array<uint8_t, 3>, std::array<uint8_t, 3>> minmax_per_channel(FrameViewRef frame);
 
 void check_value(const char* label, uint8_t received, uint8_t expected) {
     if (received != expected) {
@@ -141,9 +138,14 @@ int invalid_inputs(void) {
     check_invalid(gray, [](FrameViewRef view) { minmax_per_channel(view); });
 
     for (Coordinate size : {Coordinate(0, 3), Coordinate(17, 0)}) {
-        Frame empty(size.x, size.y, PixelFormat::RGB, FrameLayout::Planar, {});
-        check_invalid(empty, [](FrameViewRef view) { minmax_global(view); });
-        check_invalid(empty, [](FrameViewRef view) { minmax_per_channel(view); });
+        bool rejected = false;
+        try {
+            Frame empty(size.x, size.y, PixelFormat::RGB, FrameLayout::Planar, {});
+        } catch (const std::invalid_argument&) {
+            rejected = true;
+        }
+        if (!rejected)
+            throw std::runtime_error("empty frame was accepted");
     }
     return 0;
 }

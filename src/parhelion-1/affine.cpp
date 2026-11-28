@@ -1,8 +1,9 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <arm_sme.h>
 #include <arm_sve.h>
 #include <cmath>
 
+namespace {
 
 inline void affine_strided(
     std::uint8_t *data,
@@ -564,6 +565,7 @@ void affine_channel(FrameViewMut frame, float alpha, float beta) {
         affine_strided(data, width, height, stride, alpha, beta);
 }
 
+} // namespace
 
 void affine(
     FrameViewMut frame,

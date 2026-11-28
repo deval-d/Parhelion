@@ -1,4 +1,4 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <Accelerate/Accelerate.h>
 #include <algorithm>
 #include <array>
@@ -7,8 +7,6 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-
-void blend(FrameViewRef src1, FrameViewRef src2, FrameViewMut dst, float alpha);
 
 using Clock = std::chrono::steady_clock;
 
@@ -143,7 +141,6 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
 }
 
 int main(void) {
-    std::cout << "25% src1 + 75% src2; inputs divisible by 4; alpha preserved; vImageMatrixMultiply_Planar8, divisor 4, zero post-bias\n";
     std::cout << "Single thread, preallocated buffers, median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"

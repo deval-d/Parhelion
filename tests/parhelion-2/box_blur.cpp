@@ -1,10 +1,8 @@
-#include "image_types.hpp"
+#include "parhelion-2.hpp"
 #include <algorithm>
 #include <cstdint>
 #include <iostream>
 #include <stdexcept>
-
-void box_blur(FrameViewRef src, FrameViewMut dst, std::size_t radius);
 
 void check_frame(const Frame& frame, const std::vector<std::byte>& expected) {
     const auto pixels = frame.view_ref().get_span();

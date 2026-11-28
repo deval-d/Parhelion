@@ -1,5 +1,4 @@
-#include "image_types.hpp"
-#include "color_types.hpp"
+#include "parhelion-1.hpp"
 #include <Accelerate/Accelerate.h>
 #include <algorithm>
 #include <array>
@@ -8,10 +7,6 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-
-void fill(FrameViewMut frame, Color::Gray color);
-void fill(FrameViewMut frame, Color::RGB color);
-void fill(FrameViewMut frame, Color::RGBA color);
 
 using Clock = std::chrono::steady_clock;
 

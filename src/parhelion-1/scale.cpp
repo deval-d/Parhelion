@@ -1,8 +1,9 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <arm_sme.h>
 #include <arm_sve.h>
 #include <cmath>
 
+namespace {
 
 inline void scale_strided(
     std::uint8_t *data,
@@ -551,6 +552,8 @@ void scale_channel(FrameViewMut frame, float alpha) {
     else
         scale_strided(data, width, height, stride, alpha);
 } 
+
+} // namespace
 
 void scale(FrameViewMut frame, float r_alpha, float g_alpha, float b_alpha) { 
     if (!std::isfinite(r_alpha) || !std::isfinite(g_alpha) || !std::isfinite(b_alpha) ||

@@ -1,5 +1,4 @@
-Parhelion NEON planar RGBA, integer rounding to nearest; library rounds to nearest; alpha preserved
-vImagePremultiplyData_Planar8 and RGBA8888; layouts prepared outside timing
+layouts prepared outside timing
 Single thread, preallocated, buffers restored outside each timed call; median of 31 samples (us)
 Format Size         View                       Parhelion        vImage   Speedup
 RGBA8  64x64        packed vs planar               0.768         2.153     2.803

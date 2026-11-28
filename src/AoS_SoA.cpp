@@ -19,7 +19,7 @@ namespace {
         std::size_t svlb = svcntb();
         std::size_t n_full = (n / svlb) * svlb;
 
-        // full vgx3 blocks 
+    // full vgx3 blocks 
     svbool_t p = svptrue_b8(); 
     svboolx4_t pg = svcreate4_b(p, p, p, p);
         std::size_t i = 0; 

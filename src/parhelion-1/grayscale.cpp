@@ -1,6 +1,8 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <arm_sme.h>
 #include <arm_sve.h>
+
+namespace {
 
 inline svfloat32x4_t grayscale_load(const std::uint8_t *data, svcount_t pg) __arm_streaming {
     std::size_t svl = svcntw();
@@ -219,6 +221,8 @@ void grayscale_channels(
         );
     }
 }
+
+} // namespace
 
 void grayscale(FrameViewRef src, FrameViewMut dst) {
     if (src.get_pixel_format() == PixelFormat::Gray)

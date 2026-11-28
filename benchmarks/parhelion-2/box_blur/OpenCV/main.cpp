@@ -1,4 +1,4 @@
-#include "image_types.hpp"
+#include "parhelion-2.hpp"
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <algorithm>
@@ -8,8 +8,6 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-
-void box_blur(FrameViewRef src, FrameViewMut dst, std::size_t radius);
 
 using Clock = std::chrono::steady_clock;
 

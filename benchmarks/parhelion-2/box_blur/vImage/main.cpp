@@ -1,4 +1,4 @@
-#include "image_types.hpp"
+#include "parhelion-2.hpp"
 #include <Accelerate/Accelerate.h>
 #include <algorithm>
 #include <array>
@@ -7,8 +7,6 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-
-void box_blur(FrameViewRef src, FrameViewMut dst, std::size_t radius);
 
 using Clock = std::chrono::steady_clock;
 

@@ -1,0 +1,20 @@
+Single thread, median of 31 samples (us); no Parhelion scratch allocation; vImage scratch preallocated
+Format Size         Kernel      View           Parhelion        vImage   Speedup
+Gray8  256x256      sharpen     packed             8.346        53.271     6.383
+RGB8   256x256      sharpen     packed            25.188       160.549     6.374
+RGBA8  256x256      sharpen     packed            33.497       213.602     6.377
+Gray8  256x256      sharpen     cropped            8.562        63.003     7.358
+RGB8   256x256      sharpen     cropped           25.781       190.318     7.382
+RGBA8  256x256      sharpen     cropped           34.208       250.315     7.317
+Gray8  1920x1080    sharpen     packed           199.000      1601.875     8.050
+RGB8   1920x1080    sharpen     packed           601.334      4831.917     8.035
+RGBA8  1920x1080    sharpen     packed           893.750      6672.708     7.466
+Gray8  1920x1080    sharpen     cropped          231.209      1705.625     7.377
+RGB8   1920x1080    sharpen     cropped          620.708      5181.416     8.348
+RGBA8  1920x1080    sharpen     cropped          865.500      7011.000     8.101
+Gray8  3840x2160    sharpen     packed           919.625      7531.958     8.190
+RGB8   3840x2160    sharpen     packed          3240.333     25830.416     7.972
+RGBA8  3840x2160    sharpen     packed          4531.708     34719.125     7.661
+Gray8  3840x2160    sharpen     cropped          810.959      7427.292     9.159
+RGB8   3840x2160    sharpen     cropped         3464.000     27419.750     7.916
+RGBA8  3840x2160    sharpen     cropped         4362.000     36777.500     8.431

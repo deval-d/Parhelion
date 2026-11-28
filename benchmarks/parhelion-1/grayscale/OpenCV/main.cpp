@@ -1,4 +1,4 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <opencv2/core.hpp>
 #include <algorithm>
 #include <array>
@@ -8,8 +8,6 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-
-void grayscale(FrameViewRef src, FrameViewMut dst);
 
 using Clock = std::chrono::steady_clock;
 
@@ -133,8 +131,7 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
 
 int main(void) {
     cv::setNumThreads(1);
-    std::cout << "Weights 0.2126/0.7152/0.0722; alpha ignored; Parhelion truncates\n";
-    std::cout << "OpenCV cv::transform; interleaved input prepared outside timing; nearest rounding, tolerance 1\n";
+    std::cout << "interleaved input prepared outside timing\n";
     std::cout << "Single thread, preallocated buffers, median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"

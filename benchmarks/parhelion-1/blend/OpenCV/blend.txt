@@ -1,4 +1,3 @@
-25% src1 + 75% src2; inputs divisible by 4; alpha preserved; cv::addWeighted
 Single thread, preallocated buffers, median of 31 samples (us)
 Format Size         View                       Parhelion        OpenCV   Speedup
 Gray8  64x64        packed                         0.610         1.247     2.045

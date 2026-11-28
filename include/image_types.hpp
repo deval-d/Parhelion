@@ -40,6 +40,7 @@ private:
     std::span<T> buf;
 
 public:
+    /// borrows nonempty storage; strides and buffer extent must describe valid pixels.
     FrameView(
         std::size_t width,
         std::size_t height,
@@ -48,7 +49,7 @@ public:
         PixelFormat format,
         FrameLayout layout,
         std::span<T> buffer 
-    ) noexcept :
+    ) :
         w(width),
         h(height),
         row_stride(r_stride),
@@ -56,7 +57,10 @@ public:
         pixel_format(format),
         frame_layout(layout),
         buf(buffer)
-    {} 
+    {
+        if (width == 0 || height == 0)
+            throw std::invalid_argument("view dimensions must be nonzero");
+    }
 
     // getters 
     std::size_t get_width(void)  const { return w; }
@@ -150,7 +154,7 @@ private:
 
 
 public:
-    /// constructor 
+    /// owns nonempty storage matching the dimensions, format and layout.
     explicit Frame(
         std::size_t width,
         std::size_t height,

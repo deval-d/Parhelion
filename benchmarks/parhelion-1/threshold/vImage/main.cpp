@@ -1,4 +1,4 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <Accelerate/Accelerate.h>
 #include <algorithm>
 #include <array>
@@ -7,8 +7,6 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-
-void threshold(FrameViewMut frame, std::uint8_t t);
 
 using Clock = std::chrono::steady_clock;
 
@@ -127,7 +125,7 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
 }
 
 int main(void) {
-    std::cout << "Binary threshold >127/>128; alpha preserved; vImage uses precomputed LUTs\n";
+    std::cout << "vImage LUTs precomputed outside timing\n";
     std::cout << "Single thread, preallocated buffers, median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"

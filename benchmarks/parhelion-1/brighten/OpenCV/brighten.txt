@@ -1,4 +1,3 @@
-Alternating +20/-20; alpha preserved
 Single thread, preallocated buffers, median of 31 samples (us)
 Format Size         View                       Parhelion        OpenCV   Speedup
 Gray8  64x64        packed                         0.051         0.770    15.167

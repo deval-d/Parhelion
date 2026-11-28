@@ -1,11 +1,7 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <array>
 #include <iostream>
 #include <stdexcept>
-
-std::array<std::uint64_t, 256> histogram_gray(FrameViewRef frame);
-std::array<std::array<std::uint64_t, 256>, 3> histogram_rgb(FrameViewRef frame);
-std::array<std::array<std::uint64_t, 256>, 4> histogram_rgba(FrameViewRef frame);
 
 void check_histogram(
     const std::array<std::uint64_t, 256>& received,
@@ -147,14 +143,15 @@ int invalid_inputs(void) {
 
             if (layout == FrameLayout::Planar) {
                 for (Coordinate size : {Coordinate(0, 3), Coordinate(17, 0)}) {
-                    FrameViewRef empty(size.x, size.y, view.get_row_stride(), view.get_channel_stride(),
-                        format, layout, view.get_span());
-                    if (format == PixelFormat::Gray)
-                        check_invalid(empty, [](FrameViewRef view) { histogram_gray(view); });
-                    if (format == PixelFormat::RGB)
-                        check_invalid(empty, [](FrameViewRef view) { histogram_rgb(view); });
-                    if (format == PixelFormat::RGBA)
-                        check_invalid(empty, [](FrameViewRef view) { histogram_rgba(view); });
+                    bool rejected = false;
+                    try {
+                        FrameViewRef empty(size.x, size.y, view.get_row_stride(), view.get_channel_stride(),
+                            format, layout, view.get_span());
+                    } catch (const std::invalid_argument&) {
+                        rejected = true;
+                    }
+                    if (!rejected)
+                        throw std::runtime_error("empty view was accepted");
                 }
             }
         }

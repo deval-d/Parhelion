@@ -1,4 +1,4 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <algorithm>
@@ -8,8 +8,6 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-
-void threshold(FrameViewMut frame, std::uint8_t t);
 
 using Clock = std::chrono::steady_clock;
 
@@ -124,7 +122,6 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
 
 int main(void) {
     cv::setNumThreads(1);
-    std::cout << "Binary threshold >127/>128; alpha preserved; OpenCV uses cv::threshold THRESH_BINARY\n";
     std::cout << "Single thread, preallocated buffers, median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"

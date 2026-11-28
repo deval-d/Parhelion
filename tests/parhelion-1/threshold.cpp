@@ -1,9 +1,6 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <iostream>
 #include <stdexcept>
-
-void threshold(FrameViewMut frame, std::uint8_t t);
-void threshold(FrameViewMut frame, std::uint8_t rt, std::uint8_t gt, std::uint8_t bt);
 
 void check_frame(const Frame& frame, const std::vector<std::byte>& expected) {
     const auto pixels = frame.view_ref().get_span();

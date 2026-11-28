@@ -1,5 +1,3 @@
-Weights 0.2126/0.7152/0.0722; alpha ignored; Parhelion truncates
-vImageMatrixMultiply_Planar8; planar input; integer coefficients /10000, zero post-bias
 Single thread, preallocated buffers, median of 31 samples (us)
 Format Size         View                       Parhelion        vImage   Speedup
 RGB8   64x64        packed                         1.678         1.867     1.113

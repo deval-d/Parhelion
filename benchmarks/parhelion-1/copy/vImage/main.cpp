@@ -1,4 +1,4 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <Accelerate/Accelerate.h>
 #include <algorithm>
 #include <array>
@@ -7,8 +7,6 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-
-void copy(FrameViewRef src, FrameViewMut dst);
 
 using Clock = std::chrono::steady_clock;
 

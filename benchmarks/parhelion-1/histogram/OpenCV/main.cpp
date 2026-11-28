@@ -1,4 +1,4 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <algorithm>
@@ -8,10 +8,6 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-
-std::array<std::uint64_t, 256> histogram_gray(FrameViewRef frame);
-std::array<std::array<std::uint64_t, 256>, 3> histogram_rgb(FrameViewRef frame);
-std::array<std::array<std::uint64_t, 256>, 4> histogram_rgba(FrameViewRef frame);
 
 using Clock = std::chrono::steady_clock;
 

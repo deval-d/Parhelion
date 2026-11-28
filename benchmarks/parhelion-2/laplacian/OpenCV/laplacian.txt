@@ -1,0 +1,20 @@
+Single thread, median of 31 samples (us); no Parhelion scratch allocation
+Format Size         Kernel      View           Parhelion        OpenCV   Speedup
+Gray8  256x256      laplacian   packed             8.648        47.578     5.501
+RGB8   256x256      laplacian   packed            25.953       142.680     5.498
+RGBA8  256x256      laplacian   packed            34.617       190.143     5.493
+Gray8  256x256      laplacian   cropped            8.938        47.510     5.316
+RGB8   256x256      laplacian   cropped           26.844       142.786     5.319
+RGBA8  256x256      laplacian   cropped           35.721       190.375     5.329
+Gray8  1920x1080    laplacian   packed           227.875      1384.667     6.076
+RGB8   1920x1080    laplacian   packed           729.208      4176.834     5.728
+RGBA8  1920x1080    laplacian   packed           991.792      5573.209     5.619
+Gray8  1920x1080    laplacian   cropped          249.000      1384.583     5.561
+RGB8   1920x1080    laplacian   cropped          751.625      4176.291     5.556
+RGBA8  1920x1080    laplacian   cropped         1004.084      5577.542     5.555
+Gray8  3840x2160    laplacian   packed          1014.375      5527.959     5.450
+RGB8   3840x2160    laplacian   packed          3206.541     16712.084     5.212
+RGBA8  3840x2160    laplacian   packed          4347.084     22253.958     5.119
+Gray8  3840x2160    laplacian   cropped          998.000      5535.000     5.546
+RGB8   3840x2160    laplacian   cropped         2900.292     16697.125     5.757
+RGBA8  3840x2160    laplacian   cropped         4318.167     22234.750     5.149

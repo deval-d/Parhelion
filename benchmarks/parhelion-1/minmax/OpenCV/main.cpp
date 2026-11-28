@@ -1,4 +1,4 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <opencv2/core.hpp>
 #include <algorithm>
 #include <array>
@@ -7,9 +7,6 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-
-std::pair<uint8_t, uint8_t> minmax_global(FrameViewRef frame);
-std::pair<std::array<uint8_t, 3>, std::array<uint8_t, 3>> minmax_per_channel(FrameViewRef frame);
 
 using Clock = std::chrono::steady_clock;
 
@@ -172,8 +169,6 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
 
 int main(void) {
     cv::setNumThreads(1);
-    std::cout << "Planar buffers, alpha ignored; OpenCV minMaxLoc without locations\n";
-    std::cout << "OpenCV flattens packed color planes for global results; three calls for per-channel results\n";
     std::cout << "Single thread, preallocated, median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"

@@ -1,5 +1,7 @@
-#include "image_types.hpp" 
+#include "parhelion-1.hpp"
 #include <arm_sve.h> 
+
+namespace {
 
 void threshold_buffer(
     std::uint8_t *data,
@@ -104,6 +106,8 @@ void threshold_channel(FrameViewMut frame, std::uint8_t t) {
         }
     }
 }
+
+} // namespace
 
 void threshold(FrameViewMut frame, std::uint8_t rt, std::uint8_t gt, std::uint8_t bt) { 
     if (frame.get_pixel_format() == PixelFormat::Gray)

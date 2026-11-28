@@ -1,0 +1,20 @@
+Single thread, median of 31 samples (us); no Parhelion scratch allocation
+Format Size         Kernel      View           Parhelion        OpenCV   Speedup
+Gray8  256x256      sharpen     packed             8.346        47.325     5.670
+RGB8   256x256      sharpen     packed            25.039       142.299     5.683
+RGBA8  256x256      sharpen     packed            33.375       189.669     5.683
+Gray8  256x256      sharpen     cropped            8.550        47.292     5.532
+RGB8   256x256      sharpen     cropped           25.742       142.565     5.538
+RGBA8  256x256      sharpen     cropped           34.219       189.927     5.550
+Gray8  1920x1080    sharpen     packed           198.541      1384.625     6.974
+RGB8   1920x1080    sharpen     packed           727.333      4170.250     5.734
+RGBA8  1920x1080    sharpen     packed           814.125      5553.167     6.821
+Gray8  1920x1080    sharpen     cropped          225.500      1385.292     6.143
+RGB8   1920x1080    sharpen     cropped          662.250      4174.000     6.303
+RGBA8  1920x1080    sharpen     cropped          917.292      5566.333     6.068
+Gray8  3840x2160    sharpen     packed           919.625      5527.666     6.011
+RGB8   3840x2160    sharpen     packed          3037.084     16658.042     5.485
+RGBA8  3840x2160    sharpen     packed          4193.417     22222.833     5.299
+Gray8  3840x2160    sharpen     cropped          974.292      5543.584     5.690
+RGB8   3840x2160    sharpen     cropped         3154.792     16673.500     5.285
+RGBA8  3840x2160    sharpen     cropped         3539.292     22284.834     6.296

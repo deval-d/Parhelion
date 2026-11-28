@@ -1,4 +1,4 @@
-Alternating +20/-20; alpha preserved; vImage uses precomputed LUTs
+vImage LUTs precomputed outside timing
 Single thread, preallocated buffers, median of 31 samples (us)
 Format Size         View                       Parhelion        vImage   Speedup
 Gray8  64x64        packed                         0.054         0.668    12.367

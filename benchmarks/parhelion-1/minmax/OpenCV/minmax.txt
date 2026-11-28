@@ -1,5 +1,3 @@
-Planar buffers, alpha ignored; OpenCV minMaxLoc without locations
-OpenCV flattens packed color planes for global results; three calls for per-channel results
 Single thread, preallocated, median of 31 samples (us)
 Format Size         View                       Parhelion        OpenCV   Speedup
 Gray8  64x64        global packed                  0.199         0.425     2.136

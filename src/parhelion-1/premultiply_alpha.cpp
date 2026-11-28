@@ -1,5 +1,7 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <arm_neon.h>
+
+namespace {
 
 inline uint8x16_t premultiply_alpha_vector(uint8x16_t color, uint8x16_t alpha) {
     uint16x8_t p0 = vmull_u8(vget_low_u8(color), vget_low_u8(alpha));
@@ -71,6 +73,8 @@ void premultiply_alpha_channels(
         );
     }
 }
+
+} // namespace
 
 void premultiply_alpha(FrameViewMut frame) {
     if (frame.get_pixel_format() != PixelFormat::RGBA)

@@ -1,11 +1,8 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <algorithm>
 #include <iostream>
 #include <limits>
 #include <stdexcept>
-
-void brighten(FrameViewMut frame, int amount);
-void brighten(FrameViewMut frame, int r_amount, int g_amount, int b_amount);
 
 void check_frame(const Frame& frame, const std::vector<std::byte>& expected) {
     const auto pixels = frame.view_ref().get_span();

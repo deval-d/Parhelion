@@ -1,4 +1,4 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <algorithm>
@@ -9,8 +9,6 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-
-void premultiply_alpha(FrameViewMut frame);
 
 using Clock = std::chrono::steady_clock;
 
@@ -135,8 +133,7 @@ void test(std::size_t width, std::size_t height, bool cropped) {
 
 int main(void) {
     cv::setNumThreads(1);
-    std::cout << "Parhelion NEON planar RGBA, integer rounding to nearest; library rounds to nearest; alpha preserved\n";
-    std::cout << "OpenCV cvtColor RGBA2mRGBA; color rounding tolerance 1; interleaved input prepared outside timing\n";
+    std::cout << "interleaved input prepared outside timing\n";
     std::cout << "Single thread, preallocated, buffers restored outside each timed call; median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"

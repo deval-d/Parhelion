@@ -1,5 +1,4 @@
-Parhelion NEON planar RGBA, integer rounding to nearest; library rounds to nearest; alpha preserved
-OpenCV cvtColor RGBA2mRGBA; color rounding tolerance 1; interleaved input prepared outside timing
+interleaved input prepared outside timing
 Single thread, preallocated, buffers restored outside each timed call; median of 31 samples (us)
 Format Size         View                       Parhelion        OpenCV   Speedup
 RGBA8  64x64        packed                         0.768         2.758     3.592

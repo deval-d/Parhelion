@@ -1,6 +1,8 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <stdexcept> 
 #include <arm_sve.h>
+
+namespace {
 
 inline void offset_p(
     std::uint8_t *data,
@@ -70,7 +72,6 @@ inline void offset_m(
     svst1_u8_x4(p, data + i, v);  
 }
 
-
 __arm_locally_streaming 
 void offset(FrameViewMut frame, int amount) {
     bool positive = amount >= 0; 
@@ -98,6 +99,7 @@ void offset(FrameViewMut frame, int amount) {
     }
 }
 
+} // namespace
 
 void brighten(FrameViewMut frame, int amount) { 
     if (amount < -255 || amount > 255)
@@ -122,7 +124,6 @@ void brighten(FrameViewMut frame, int amount) {
             break;
     }
 }
-
 
 void brighten(FrameViewMut frame, int r_amount, int g_amount, int b_amount) { 
     if (frame.get_pixel_format() == PixelFormat::Gray)

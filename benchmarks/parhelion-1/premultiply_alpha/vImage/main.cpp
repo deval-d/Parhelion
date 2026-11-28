@@ -1,4 +1,4 @@
-#include "image_types.hpp"
+#include "parhelion-1.hpp"
 #include <Accelerate/Accelerate.h>
 #include <algorithm>
 #include <array>
@@ -8,8 +8,6 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
-
-void premultiply_alpha(FrameViewMut frame);
 
 using Clock = std::chrono::steady_clock;
 
@@ -153,8 +151,7 @@ void test(std::size_t width, std::size_t height, bool cropped, bool interleaved)
 }
 
 int main(void) {
-    std::cout << "Parhelion NEON planar RGBA, integer rounding to nearest; library rounds to nearest; alpha preserved\n";
-    std::cout << "vImagePremultiplyData_Planar8 and RGBA8888; layouts prepared outside timing\n";
+    std::cout << "layouts prepared outside timing\n";
     std::cout << "Single thread, preallocated, buffers restored outside each timed call; median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"

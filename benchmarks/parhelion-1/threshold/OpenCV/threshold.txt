@@ -1,4 +1,3 @@
-Binary threshold >127/>128; alpha preserved; OpenCV uses cv::threshold THRESH_BINARY
 Single thread, preallocated buffers, median of 31 samples (us)
 Format Size         View                       Parhelion        OpenCV   Speedup
 Gray8  64x64        packed                         0.197         0.408     2.069
