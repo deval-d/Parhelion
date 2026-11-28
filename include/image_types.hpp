@@ -78,6 +78,23 @@ public:
     FrameLayout get_frame_layout(void) const { return frame_layout; }
     std::span<T> get_span(void) const { return buf; }
 
+    /// borrows a nonempty band of rows, preserving the original strides.
+    FrameView subrows(std::size_t y, std::size_t height) const {
+        if (height == 0)
+            throw std::invalid_argument("band height must be nonzero");
+        if (y >= h || height > h - y)
+            throw std::out_of_range("band is outside the view");
+
+        const auto channels = get_n_channels();
+        const bool planar = frame_layout == FrameLayout::Planar;
+        const auto row_bytes = planar ? w : w * channels;
+        const auto plane_offset = planar && channels > 1
+            ? (channels - 1) * channel_stride.value() : 0;
+        const auto extent = plane_offset + (height - 1) * row_stride + row_bytes;
+        return FrameView(w, height, row_stride, channel_stride, pixel_format,
+            frame_layout, buf.subspan(y * row_stride, extent));
+    }
+
     FrameView<std::byte> channel_mut(std::size_t channel) const
         requires std::is_same_v<T, std::byte>
     {
