@@ -1,0 +1,16 @@
+vImage: native tiling enabled
+layouts prepared outside timing
+Parhelion Metal: staging copies and GPU wait included. preallocated, buffers restored outside each timed call; median of 31 samples (us)
+Format Size         View                       Parhelion        vImage   Speedup
+RGBA8  1920x1080    packed vs planar            2774.000       440.458     0.159
+RGBA8  1920x1080    packed vs RGBA              2415.917       162.063     0.067
+RGBA8  1920x1080    cropped vs planar           2310.000       439.167     0.190
+RGBA8  1920x1080    cropped vs RGBA             2313.375       157.271     0.068
+RGBA8  2560x1440    packed vs planar            4933.209       784.604     0.159
+RGBA8  2560x1440    packed vs RGBA              3855.875       293.500     0.076
+RGBA8  2560x1440    cropped vs planar           4659.291       795.000     0.171
+RGBA8  2560x1440    cropped vs RGBA             3910.708       320.104     0.082
+RGBA8  3840x2160    packed vs planar            9234.042      1821.896     0.197
+RGBA8  3840x2160    packed vs RGBA              7800.584       913.917     0.117
+RGBA8  3840x2160    cropped vs planar           8616.916      1870.542     0.217
+RGBA8  3840x2160    cropped vs RGBA             7388.875       900.479     0.122

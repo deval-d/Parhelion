@@ -69,6 +69,3 @@ Every measured size is also checked against that reference before timing and aft
 last sample; source bytes must remain unchanged. 
 
 the allowed byte error is 1 for Parhelion and vImage, 2 for OpenCV, and 0 for radius-zero cases because blur rounding differs.
-
-[results.txt](results.txt) records one full run with its CPU, OS, compiler, flags and command.
-Results describe that machine and build, not every SME2 implementation.

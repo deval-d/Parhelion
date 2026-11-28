@@ -1,3 +1,4 @@
+#include "../../../threading/mode.hpp"
 #include "parhelion-1.hpp"
 #include <opencv2/core.hpp>
 #include <algorithm>
@@ -95,7 +96,7 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
         view.get_span().data(), view.get_row_stride());
     const float coefficients[] = {0.2126f, 0.7152f, 0.0722f, 0.0f};
     const cv::Mat matrix(1, static_cast<int>(channels), CV_32F, const_cast<float*>(coefficients));
-    auto ours = [&](int) { grayscale(src, view); };
+    auto ours = [&](int) { PARHELION_BENCH_CALL(grayscale, src, view); };
     auto theirs = [&](int) { cv::transform(input, output, matrix); };
 
     auto expected = untouched;
@@ -130,9 +131,13 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
 }
 
 int main(void) {
-    cv::setNumThreads(1);
+    cv::setNumThreads(benchmark_threads);
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+    std::cout << "OpenCV: requested " << benchmark_threads
+              << " threads; backend reports " << cv::getNumThreads() << '\n';
+#endif
     std::cout << "interleaved input prepared outside timing\n";
-    std::cout << "Single thread, preallocated buffers, median of 31 samples (us)\n"
+    std::cout << benchmark_mode << "preallocated buffers, median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"
               << std::right << std::setw(14) << "Parhelion"
@@ -143,6 +148,10 @@ int main(void) {
         Coordinate(1280, 720), Coordinate(1920, 1080),
         Coordinate(2560, 1440), Coordinate(3840, 2160)
     }) {
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+        if (size.x < 1920)
+            continue;
+#endif
         for (bool cropped : {false, true}) {
             test(PixelFormat::RGB, 3, size.x, size.y, cropped);
             test(PixelFormat::RGBA, 4, size.x, size.y, cropped);

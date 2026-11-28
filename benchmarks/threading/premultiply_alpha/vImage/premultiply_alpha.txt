@@ -1,0 +1,16 @@
+vImage: native tiling enabled
+layouts prepared outside timing
+Parhelion: pool capacity 8, adaptive dispatch. preallocated, buffers restored outside each timed call; median of 31 samples (us)
+Format Size         View                       Parhelion        vImage   Speedup
+RGBA8  1920x1080    packed vs planar             112.000       421.500     3.763
+RGBA8  1920x1080    packed vs RGBA               114.541       175.000     1.528
+RGBA8  1920x1080    cropped vs planar            120.812       430.833     3.566
+RGBA8  1920x1080    cropped vs RGBA              116.646       162.271     1.391
+RGBA8  2560x1440    packed vs planar             203.020       771.000     3.798
+RGBA8  2560x1440    packed vs RGBA               193.041       292.333     1.514
+RGBA8  2560x1440    cropped vs planar            210.688       778.333     3.694
+RGBA8  2560x1440    cropped vs RGBA              197.292       322.167     1.633
+RGBA8  3840x2160    packed vs planar             726.792      1811.438     2.492
+RGBA8  3840x2160    packed vs RGBA               591.416       835.188     1.412
+RGBA8  3840x2160    cropped vs planar            716.771      1820.166     2.539
+RGBA8  3840x2160    cropped vs RGBA              626.562       817.437     1.305

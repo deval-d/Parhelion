@@ -1,3 +1,4 @@
+#include "../../../threading/mode.hpp"
 #include "parhelion-1.hpp"
 #include <Accelerate/Accelerate.h>
 #include <algorithm>
@@ -100,14 +101,14 @@ void test(std::size_t width, std::size_t height, bool cropped, bool interleaved)
             height, width, frame_width};
     vImage_Buffer rgba_channel = {rgba.data() + 4 * (xy.y * frame_width + xy.x),
         height, width, 4 * frame_width};
-    auto ours = [&](int) { premultiply_alpha(view); };
+    auto ours = [&](int) { PARHELION_BENCH_CALL(premultiply_alpha, view); };
     auto theirs = [&](int) {
         if (interleaved) {
-            if (vImagePremultiplyData_RGBA8888(&rgba_channel, &rgba_channel, kvImageDoNotTile) != kvImageNoError)
+            if (vImagePremultiplyData_RGBA8888(&rgba_channel, &rgba_channel, (benchmark_threads == 1 ? kvImageDoNotTile : kvImageNoFlags)) != kvImageNoError)
                 throw std::runtime_error("vImage premultiply failed");
         } else {
             for (std::size_t c = 0; c < 3; ++c)
-                if (vImagePremultiplyData_Planar8(&channel[c], &channel[3], &channel[c], kvImageDoNotTile) != kvImageNoError)
+                if (vImagePremultiplyData_Planar8(&channel[c], &channel[3], &channel[c], (benchmark_threads == 1 ? kvImageDoNotTile : kvImageNoFlags)) != kvImageNoError)
                     throw std::runtime_error("vImage premultiply failed");
         }
     };
@@ -151,8 +152,11 @@ void test(std::size_t width, std::size_t height, bool cropped, bool interleaved)
 }
 
 int main(void) {
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+    std::cout << "vImage: native tiling enabled\n";
+#endif
     std::cout << "layouts prepared outside timing\n";
-    std::cout << "Single thread, preallocated, buffers restored outside each timed call; median of 31 samples (us)\n"
+    std::cout << benchmark_mode << "preallocated, buffers restored outside each timed call; median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"
               << std::right << std::setw(14) << "Parhelion"
@@ -163,6 +167,10 @@ int main(void) {
         Coordinate(1280, 720), Coordinate(1920, 1080),
         Coordinate(2560, 1440), Coordinate(3840, 2160)
     }) {
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+        if (size.x < 1920)
+            continue;
+#endif
         for (bool cropped : {false, true}) {
             for (bool interleaved : {false, true})
                 test(size.x, size.y, cropped, interleaved);

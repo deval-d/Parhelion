@@ -1,0 +1,21 @@
+vImage: native tiling enabled
+Parhelion: pool capacity 8, adaptive dispatch. preallocated buffers, median of 31 samples (us)
+Format Size         View                       Parhelion        vImage   Speedup
+Gray8  1920x1080    packed                       260.271       186.688     0.717
+RGB8   1920x1080    packed                       544.875       529.396     0.972
+RGBA8  1920x1080    packed                       546.167       521.770     0.955
+Gray8  1920x1080    cropped                      358.041       160.875     0.449
+RGB8   1920x1080    cropped                      689.208       446.896     0.648
+RGBA8  1920x1080    cropped                      707.521       475.562     0.672
+Gray8  2560x1440    packed                       396.042       256.146     0.647
+RGB8   2560x1440    packed                      1038.542       737.792     0.710
+RGBA8  2560x1440    packed                      1109.979       826.500     0.745
+Gray8  2560x1440    cropped                      507.604       240.125     0.473
+RGB8   2560x1440    cropped                     1290.500       764.875     0.593
+RGBA8  2560x1440    cropped                     1365.688       857.730     0.628
+Gray8  3840x2160    packed                       849.562       540.771     0.637
+RGB8   3840x2160    packed                      2602.938      1715.500     0.659
+RGBA8  3840x2160    packed                      2335.208      1878.542     0.804
+Gray8  3840x2160    cropped                      942.480       543.229     0.576
+RGB8   3840x2160    cropped                     2741.375      1892.792     0.690
+RGBA8  3840x2160    cropped                     2774.729      1884.125     0.679

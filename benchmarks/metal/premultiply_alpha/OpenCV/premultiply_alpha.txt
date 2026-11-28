@@ -1,0 +1,10 @@
+OpenCV: requested 8 threads; backend reports 10
+interleaved input prepared outside timing
+Parhelion Metal: staging copies and GPU wait included. preallocated, buffers restored outside each timed call; median of 31 samples (us)
+Format Size         View                       Parhelion        OpenCV   Speedup
+RGBA8  1920x1080    packed                      2302.624       522.417     0.227
+RGBA8  1920x1080    cropped                     2432.312       484.562     0.199
+RGBA8  2560x1440    packed                      3919.479      1099.583     0.281
+RGBA8  2560x1440    cropped                     4026.958      1251.792     0.311
+RGBA8  3840x2160    packed                      7952.791      2444.104     0.307
+RGBA8  3840x2160    cropped                     8933.333      2534.958     0.284

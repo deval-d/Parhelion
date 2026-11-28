@@ -1,0 +1,21 @@
+OpenCV: requested 8 threads; backend reports 10
+Parhelion: pool capacity 8, adaptive dispatch. preallocated buffers, median of 31 samples (us)
+Format Size         View                       Parhelion        OpenCV   Speedup
+Gray8  1920x1080    packed                       293.625       373.521     1.272
+RGB8   1920x1080    packed                       553.646      1121.479     2.026
+RGBA8  1920x1080    packed                       558.375      1122.833     2.011
+Gray8  1920x1080    cropped                     3185.208       374.584     0.118
+RGB8   1920x1080    cropped                     3600.375      1126.354     0.313
+RGBA8  1920x1080    cropped                     3651.479      1126.271     0.308
+Gray8  2560x1440    packed                       347.041       665.438     1.917
+RGB8   2560x1440    packed                       934.042      1996.958     2.138
+RGBA8  2560x1440    packed                       933.333      2000.062     2.143
+Gray8  2560x1440    cropped                     3107.958       665.271     0.214
+RGB8   2560x1440    cropped                     5895.583      2000.104     0.339
+RGBA8  2560x1440    cropped                     5601.771      1998.312     0.357
+Gray8  3840x2160    packed                       703.854      1499.062     2.130
+RGB8   3840x2160    packed                      2141.271      4542.646     2.121
+RGBA8  3840x2160    packed                      2403.084      4576.854     1.905
+Gray8  3840x2160    cropped                     4848.875      1501.542     0.310
+RGB8   3840x2160    cropped                    10512.396      4533.771     0.431
+RGBA8  3840x2160    cropped                    10641.000      4526.292     0.425

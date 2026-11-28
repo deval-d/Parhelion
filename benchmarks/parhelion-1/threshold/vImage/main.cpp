@@ -1,3 +1,4 @@
+#include "../../../threading/mode.hpp"
 #include "parhelion-1.hpp"
 #include <Accelerate/Accelerate.h>
 #include <algorithm>
@@ -90,10 +91,10 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
         table[0][value] = static_cast<Pixel_8>(value > 127 ? 255 : 0);
         table[1][value] = static_cast<Pixel_8>(value > 128 ? 255 : 0);
     }
-    auto ours = [&](int i) { threshold(view, static_cast<std::uint8_t>(127 + i % 2)); };
+    auto ours = [&](int i) { PARHELION_BENCH_CALL(threshold, view, static_cast<std::uint8_t>(127 + i % 2)); };
     auto theirs = [&](int i) {
         for (std::size_t c = 0; c < (channels == 4 ? 3 : channels); ++c) {
-            if (vImageTableLookUp_Planar8(&channel[c], &channel[c], table[i % 2].data(), kvImageDoNotTile) != kvImageNoError)
+            if (vImageTableLookUp_Planar8(&channel[c], &channel[c], table[i % 2].data(), (benchmark_threads == 1 ? kvImageDoNotTile : kvImageNoFlags)) != kvImageNoError)
                 throw std::runtime_error("vImage threshold failed");
         }
     };
@@ -125,8 +126,11 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
 }
 
 int main(void) {
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+    std::cout << "vImage: native tiling enabled\n";
+#endif
     std::cout << "vImage LUTs precomputed outside timing\n";
-    std::cout << "Single thread, preallocated buffers, median of 31 samples (us)\n"
+    std::cout << benchmark_mode << "preallocated buffers, median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"
               << std::right << std::setw(14) << "Parhelion"
@@ -137,6 +141,10 @@ int main(void) {
         Coordinate(1280, 720), Coordinate(1920, 1080),
         Coordinate(2560, 1440), Coordinate(3840, 2160)
     }) {
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+        if (size.x < 1920)
+            continue;
+#endif
         for (bool cropped : {false, true}) {
             test(PixelFormat::Gray, 1, size.x, size.y, cropped);
             test(PixelFormat::RGB, 3, size.x, size.y, cropped);

@@ -1,3 +1,4 @@
+#include "../../../threading/mode.hpp"
 #include "parhelion-1.hpp"
 #include <opencv2/core.hpp>
 #include <algorithm>
@@ -86,7 +87,7 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
     for (std::size_t c = 0; c < channels; ++c)
         channel[c] = cv::Mat(static_cast<int>(height), static_cast<int>(width), CV_8UC1,
             view.get_span().data() + c * n, view.get_row_stride());
-    auto ours = [&](int i) { affine(view, i % 2 == 0 ? 2.0f : 0.5f, i % 2 == 0 ? 8.0f : -4.0f); };
+    auto ours = [&](int i) { PARHELION_BENCH_CALL(affine, view, i % 2 == 0 ? 2.0f : 0.5f, i % 2 == 0 ? 8.0f : -4.0f); };
     auto theirs = [&](int i) {
         for (std::size_t c = 0; c < (channels == 4 ? 3 : channels); ++c) {
             channel[c].convertTo(channel[c], -1, i % 2 == 0 ? 2.0 : 0.5, i % 2 == 0 ? 8.0 : -4.0);
@@ -118,8 +119,12 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
 }
 
 int main(void) {
-    cv::setNumThreads(1);
-    std::cout << "Single thread, preallocated buffers, median of 31 samples (us)\n"
+    cv::setNumThreads(benchmark_threads);
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+    std::cout << "OpenCV: requested " << benchmark_threads
+              << " threads; backend reports " << cv::getNumThreads() << '\n';
+#endif
+    std::cout << benchmark_mode << "preallocated buffers, median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"
               << std::right << std::setw(14) << "Parhelion"
@@ -130,6 +135,10 @@ int main(void) {
         Coordinate(1280, 720), Coordinate(1920, 1080),
         Coordinate(2560, 1440), Coordinate(3840, 2160)
     }) {
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+        if (size.x < 1920)
+            continue;
+#endif
         for (bool cropped : {false, true}) {
             test(PixelFormat::Gray, 1, size.x, size.y, cropped);
             test(PixelFormat::RGB, 3, size.x, size.y, cropped);

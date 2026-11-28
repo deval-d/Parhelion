@@ -1,3 +1,4 @@
+#include "../../../threading/mode.hpp"
 #include "parhelion-1.hpp"
 #include <Accelerate/Accelerate.h>
 #include <algorithm>
@@ -89,15 +90,15 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
         const auto r = static_cast<std::byte>(i % 2 == 0 ? 37 : 211);
         const auto b = static_cast<std::byte>(i % 2 == 0 ? 211 : 37);
         switch (format) {
-            case PixelFormat::Gray: fill(view, Color::Gray{r}); break;
-            case PixelFormat::RGB: fill(view, Color::RGB{r, std::byte{91}, b}); break;
-            case PixelFormat::RGBA: fill(view, Color::RGBA{r, std::byte{91}, b, std::byte{255}}); break;
+            case PixelFormat::Gray: PARHELION_BENCH_CALL(fill, view, Color::Gray{r}); break;
+            case PixelFormat::RGB: PARHELION_BENCH_CALL(fill, view, Color::RGB{r, std::byte{91}, b}); break;
+            case PixelFormat::RGBA: PARHELION_BENCH_CALL(fill, view, Color::RGBA{r, std::byte{91}, b, std::byte{255}}); break;
         }
     };
     auto theirs = [&](int i) {
         for (std::size_t c = 0; c < (channels); ++c) {
             const int values[4] = {i % 2 == 0 ? 37 : 211, 91, i % 2 == 0 ? 211 : 37, 255};
-            if (vImageOverwriteChannelsWithScalar_Planar8(static_cast<Pixel_8>(values[c]), &channel[c], kvImageDoNotTile) != kvImageNoError)
+            if (vImageOverwriteChannelsWithScalar_Planar8(static_cast<Pixel_8>(values[c]), &channel[c], (benchmark_threads == 1 ? kvImageDoNotTile : kvImageNoFlags)) != kvImageNoError)
                 throw std::runtime_error("vImage fill failed");
         }
     };
@@ -126,7 +127,10 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
 }
 
 int main(void) {
-    std::cout << "Single thread, preallocated buffers, median of 31 samples (us)\n"
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+    std::cout << "vImage: native tiling enabled\n";
+#endif
+    std::cout << benchmark_mode << "preallocated buffers, median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"
               << std::right << std::setw(14) << "Parhelion"
@@ -137,6 +141,10 @@ int main(void) {
         Coordinate(1280, 720), Coordinate(1920, 1080),
         Coordinate(2560, 1440), Coordinate(3840, 2160)
     }) {
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+        if (size.x < 1920)
+            continue;
+#endif
         for (bool cropped : {false, true}) {
             test(PixelFormat::Gray, 1, size.x, size.y, cropped);
             test(PixelFormat::RGB, 3, size.x, size.y, cropped);

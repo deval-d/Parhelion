@@ -1,3 +1,4 @@
+#include "../../../threading/mode.hpp"
 #include "parhelion-1.hpp"
 #include <Accelerate/Accelerate.h>
 #include <algorithm>
@@ -94,10 +95,10 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
     const vImage_Buffer* outputs[] = {&output};
     const int16_t matrix[] = {2126, 7152, 722};
     const int32_t post_bias = 0;
-    auto ours = [&](int) { grayscale(src, view); };
+    auto ours = [&](int) { PARHELION_BENCH_CALL(grayscale, src, view); };
     auto theirs = [&](int) {
         if (vImageMatrixMultiply_Planar8(inputs, outputs, 3, 1, matrix, 10000,
-            nullptr, &post_bias, kvImageDoNotTile) != kvImageNoError)
+            nullptr, &post_bias, (benchmark_threads == 1 ? kvImageDoNotTile : kvImageNoFlags)) != kvImageNoError)
             throw std::runtime_error("vImage grayscale failed");
     };
 
@@ -127,7 +128,10 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
 }
 
 int main(void) {
-    std::cout << "Single thread, preallocated buffers, median of 31 samples (us)\n"
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+    std::cout << "vImage: native tiling enabled\n";
+#endif
+    std::cout << benchmark_mode << "preallocated buffers, median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"
               << std::right << std::setw(14) << "Parhelion"
@@ -138,6 +142,10 @@ int main(void) {
         Coordinate(1280, 720), Coordinate(1920, 1080),
         Coordinate(2560, 1440), Coordinate(3840, 2160)
     }) {
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+        if (size.x < 1920)
+            continue;
+#endif
         for (bool cropped : {false, true}) {
             test(PixelFormat::RGB, 3, size.x, size.y, cropped);
             test(PixelFormat::RGBA, 4, size.x, size.y, cropped);

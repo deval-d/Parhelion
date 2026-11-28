@@ -1,3 +1,4 @@
+#include "../../../threading/mode.hpp"
 #include "parhelion-1.hpp"
 #include <Accelerate/Accelerate.h>
 #include <algorithm>
@@ -91,10 +92,10 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
     for (std::size_t c = 0; c < channels; ++c)
         src_channel[c] = {const_cast<std::byte*>(src.get_span().data()) + c * n,
             height, width, src.get_row_stride()};
-    auto ours = [&](int) { copy(src, view); };
+    auto ours = [&](int) { PARHELION_BENCH_CALL(copy, src, view); };
     auto theirs = [&](int) {
         for (std::size_t c = 0; c < (channels); ++c) {
-            if (vImageCopyBuffer(&src_channel[c], &channel[c], 1, kvImageDoNotTile) != kvImageNoError)
+            if (vImageCopyBuffer(&src_channel[c], &channel[c], 1, (benchmark_threads == 1 ? kvImageDoNotTile : kvImageNoFlags)) != kvImageNoError)
                 throw std::runtime_error("vImage copy failed");
         }
     };
@@ -124,7 +125,10 @@ void test(PixelFormat format, std::size_t channels, std::size_t width, std::size
 }
 
 int main(void) {
-    std::cout << "Single thread, preallocated buffers, median of 31 samples (us)\n"
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+    std::cout << "vImage: native tiling enabled\n";
+#endif
+    std::cout << benchmark_mode << "preallocated buffers, median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"
               << std::right << std::setw(14) << "Parhelion"
@@ -135,6 +139,10 @@ int main(void) {
         Coordinate(1280, 720), Coordinate(1920, 1080),
         Coordinate(2560, 1440), Coordinate(3840, 2160)
     }) {
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+        if (size.x < 1920)
+            continue;
+#endif
         for (bool cropped : {false, true}) {
             test(PixelFormat::Gray, 1, size.x, size.y, cropped);
             test(PixelFormat::RGB, 3, size.x, size.y, cropped);

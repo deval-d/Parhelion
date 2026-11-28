@@ -1,3 +1,4 @@
+#include "../../../threading/mode.hpp"
 #include "parhelion-1.hpp"
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -96,7 +97,7 @@ void test(std::size_t width, std::size_t height, bool cropped) {
     auto packed_original = rgba;
     cv::Mat channel(static_cast<int>(height), static_cast<int>(width), CV_8UC4,
         rgba.data() + 4 * (xy.y * frame_width + xy.x), 4 * frame_width);
-    auto ours = [&](int) { premultiply_alpha(view); };
+    auto ours = [&](int) { PARHELION_BENCH_CALL(premultiply_alpha, view); };
     auto theirs = [&](int) { cv::cvtColor(channel, channel, cv::COLOR_RGBA2mRGBA); };
     auto reset_ours = [&] { std::copy(original.begin(), original.end(), pixels.begin()); };
     auto reset_theirs = [&] { std::copy(packed_original.begin(), packed_original.end(), rgba.begin()); };
@@ -132,9 +133,13 @@ void test(std::size_t width, std::size_t height, bool cropped) {
 }
 
 int main(void) {
-    cv::setNumThreads(1);
+    cv::setNumThreads(benchmark_threads);
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+    std::cout << "OpenCV: requested " << benchmark_threads
+              << " threads; backend reports " << cv::getNumThreads() << '\n';
+#endif
     std::cout << "interleaved input prepared outside timing\n";
-    std::cout << "Single thread, preallocated, buffers restored outside each timed call; median of 31 samples (us)\n"
+    std::cout << benchmark_mode << "preallocated, buffers restored outside each timed call; median of 31 samples (us)\n"
               << std::left << std::setw(7) << "Format"
               << std::setw(13) << "Size" << std::setw(22) << "View"
               << std::right << std::setw(14) << "Parhelion"
@@ -145,6 +150,10 @@ int main(void) {
         Coordinate(1280, 720), Coordinate(1920, 1080),
         Coordinate(2560, 1440), Coordinate(3840, 2160)
     }) {
+#if defined(PARHELION_THREADED_BENCHMARK) || defined(PARHELION_METAL_BENCHMARK)
+        if (size.x < 1920)
+            continue;
+#endif
         for (bool cropped : {false, true}) {
             test(size.x, size.y, cropped);
         }

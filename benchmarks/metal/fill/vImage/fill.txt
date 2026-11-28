@@ -1,0 +1,21 @@
+vImage: native tiling enabled
+Parhelion Metal: staging copies and GPU wait included. preallocated buffers, median of 31 samples (us)
+Format Size         View                       Parhelion        vImage   Speedup
+Gray8  1920x1080    packed                       837.396        51.521     0.062
+RGB8   1920x1080    packed                      1720.438       152.020     0.088
+RGBA8  1920x1080    packed                      2222.208       204.792     0.092
+Gray8  1920x1080    cropped                      604.542        52.604     0.087
+RGB8   1920x1080    cropped                     1717.833       158.062     0.092
+RGBA8  1920x1080    cropped                     2418.729       212.875     0.088
+Gray8  2560x1440    packed                       820.062        89.729     0.109
+RGB8   2560x1440    packed                      2996.959       300.250     0.100
+RGBA8  2560x1440    packed                      3420.041       457.854     0.134
+Gray8  2560x1440    cropped                      827.062        92.771     0.112
+RGB8   2560x1440    cropped                     2302.417       283.166     0.123
+RGBA8  2560x1440    cropped                     4393.833       546.333     0.124
+Gray8  3840x2160    packed                      2450.646       213.646     0.087
+RGB8   3840x2160    packed                      7118.021      1197.250     0.168
+RGBA8  3840x2160    packed                     10608.875      1699.896     0.160
+Gray8  3840x2160    cropped                     2313.562       214.042     0.093
+RGB8   3840x2160    cropped                     8164.104      1131.208     0.139
+RGBA8  3840x2160    cropped                    10672.292      1659.917     0.156
