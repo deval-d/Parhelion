@@ -75,7 +75,9 @@ void test(
 
 void test_sizes(PixelFormat format, std::size_t channels) {
     for (Coordinate size : {
-        Coordinate(1, 1), Coordinate(3, 2), Coordinate(63, 1),
+        Coordinate(1, 1), Coordinate(3, 2), Coordinate(4, 3), Coordinate(5, 3),
+        Coordinate(7, 3), Coordinate(8, 3), Coordinate(9, 3),
+        Coordinate(15, 3), Coordinate(16, 3), Coordinate(17, 3), Coordinate(63, 1),
         Coordinate(64, 1), Coordinate(65, 1), Coordinate(255, 1),
         Coordinate(256, 1), Coordinate(257, 1), Coordinate(1025, 3)
     }) {
