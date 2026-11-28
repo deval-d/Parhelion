@@ -46,29 +46,34 @@ if(NOT PARHELION_HAS_SME2_ACLE)
         "check PARHELION_ARCH, PARHELION_CPU and the compiler diagnostics")
 endif()
 
+find_package(Threads REQUIRED)
+
 add_library(parhelion STATIC
+    src/threading/thread_pool.cpp
+    src/threading/parhelion-1.cpp
     src/AoS_SoA.cpp
     src/image_stb.cpp
-    src/parhelion-1/affine.cpp
-    src/parhelion-1/blend.cpp
-    src/parhelion-1/brighten.cpp
-    src/parhelion-1/copy.cpp
-    src/parhelion-1/fill.cpp
-    src/parhelion-1/grayscale.cpp
-    src/parhelion-1/histogram.cpp
-    src/parhelion-1/minmax.cpp
-    src/parhelion-1/premultiply_alpha.cpp
-    src/parhelion-1/scale.cpp
-    src/parhelion-1/threshold.cpp
-    src/parhelion-2/box_blur.cpp
-    src/parhelion-2/convolution.cpp
-    src/parhelion-2/gaussian_blur.cpp
-    src/parhelion-2/laplacian.cpp
-    src/parhelion-2/sharpen.cpp
-    src/parhelion-2/sobel.cpp
+    src/kernels/parhelion-1/affine.cpp
+    src/kernels/parhelion-1/blend.cpp
+    src/kernels/parhelion-1/brighten.cpp
+    src/kernels/parhelion-1/copy.cpp
+    src/kernels/parhelion-1/fill.cpp
+    src/kernels/parhelion-1/grayscale.cpp
+    src/kernels/parhelion-1/histogram.cpp
+    src/kernels/parhelion-1/minmax.cpp
+    src/kernels/parhelion-1/premultiply_alpha.cpp
+    src/kernels/parhelion-1/scale.cpp
+    src/kernels/parhelion-1/threshold.cpp
+    src/kernels/parhelion-2/box_blur.cpp
+    src/kernels/parhelion-2/convolution.cpp
+    src/kernels/parhelion-2/gaussian_blur.cpp
+    src/kernels/parhelion-2/laplacian.cpp
+    src/kernels/parhelion-2/sharpen.cpp
+    src/kernels/parhelion-2/sobel.cpp
 )
 add_library(parhelion::parhelion ALIAS parhelion)
 
+target_link_libraries(parhelion PRIVATE Threads::Threads)
 target_compile_features(parhelion PUBLIC cxx_std_20)
 target_compile_options(parhelion PRIVATE ${parhelion_arch_options})
 target_include_directories(parhelion PUBLIC
@@ -80,6 +85,21 @@ set_target_properties(parhelion PROPERTIES
     CXX_EXTENSIONS OFF
     POSITION_INDEPENDENT_CODE ON
 )
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    enable_language(OBJCXX)
+    find_library(parhelion_metal_framework Metal REQUIRED)
+    find_library(parhelion_foundation_framework Foundation REQUIRED)
+    set(shader "${CMAKE_CURRENT_SOURCE_DIR}/src/metal/parhelion-1.metal")
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${shader}")
+    file(READ "${shader}" parhelion_metal_source)
+    configure_file(src/metal/shader.hpp.in parhelion_metal_shader.hpp @ONLY)
+    target_sources(parhelion PRIVATE src/metal/parhelion-1.mm)
+    target_include_directories(parhelion PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+    target_compile_options(parhelion PRIVATE $<$<COMPILE_LANGUAGE:OBJCXX>:-fobjc-arc>)
+    set_target_properties(parhelion PROPERTIES OBJCXX_STANDARD 20 OBJCXX_STANDARD_REQUIRED ON)
+    target_link_libraries(parhelion PRIVATE "${parhelion_metal_framework}" "${parhelion_foundation_framework}")
+endif()
 
 if(PARHELION_BUILD_TESTS)
     enable_testing()
