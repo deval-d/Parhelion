@@ -1,6 +1,6 @@
 # pipeline benchmark
 
-Measures this complete, single-threaded operation:
+measures this complete, single-threaded operation:
 
 ```text
 immutable interleaved input
@@ -57,16 +57,18 @@ benchmark, not a cold-memory or streaming-video measurement. Run it without comp
 
 OpenCV parallel dispatch is disabled with `cv::setNumThreads(0)`; every vImage
 operation uses `kvImageDoNotTile`.
-All backends use planar intermediates to measure the same layout pipeline. These results
-do not establish the fastest possible interleaved pipeline each library could implement.
+All backends use planar intermediates to measure the same layout pipeline.
+
+Of course, these results do not establish the fastest possible interleaved pipeline each library could implement.
 
 ## correctness and recorded results
 
 Before timing, an independent scalar implementation checks constant, random and impulse
 inputs, tiny images, vector tails, radii 0/1/4, negative brightness and RGBA alpha behavior.
 Every measured size is also checked against that reference before timing and after the
-last sample; source bytes must remain unchanged. Allowed byte error is 1 for Parhelion
-and vImage, 2 for OpenCV, and 0 for radius-zero cases because blur rounding differs.
+last sample; source bytes must remain unchanged. 
+
+the allowed byte error is 1 for Parhelion and vImage, 2 for OpenCV, and 0 for radius-zero cases because blur rounding differs.
 
 [results.txt](results.txt) records one full run with its CPU, OS, compiler, flags and command.
 Results describe that machine and build, not every SME2 implementation.
