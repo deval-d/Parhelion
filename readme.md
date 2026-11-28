@@ -19,6 +19,43 @@ headers in `include/`.
 
 The default architecture flag is `-march=armv8-a+sme2`.
 
+## single-threaded pipeline
+
+Load a PNG, brighten it, apply Gaussian blur, and save the result.
+
+```cpp
+#include "AoS_SoA.hpp"
+#include "image_load.hpp"
+#include "image_write.hpp"
+#include "parhelion-1.hpp"
+#include "parhelion-2.hpp"
+
+int main() {
+    auto input = image_load("examples/black-diamond-before.png");
+    convert_to_planar(input);
+    brighten(input.view_mut(), 20);
+
+    Frame output(input.get_width(), input.get_height(), input.get_pixel_format(),
+        FrameLayout::Planar, std::vector<std::byte>(input.view_ref().get_span().size()));
+    gaussian_blur(input.view_ref(), output.view_mut(), 1.5f, 4);
+
+    convert_to_interleaved(output);
+    image_write("examples/black-diamond-after.png", output);
+}
+```
+
+| Before | After |
+| --- | --- |
+| ![Black Diamond before](examples/black-diamond-before.png) | ![Black Diamond after brightness and Gaussian blur](examples/black-diamond-after.png) |
+
+| Parhelion | OpenCV | vImage |
+| ---: | ---: | ---: |
+| 26.016 ms | 38.641 ms | 33.175 ms |
+
+Median of 31 single-threaded runs on an Apple M4 using the pictured 2524 × 1892 RGBA image.
+Timings include allocations and layout conversions and exclude PNG I/O. The benchmark
+preserves the source image, so Parhelion also copies the input before processing.
+
 ## threading and metal
 
 Include `parallel-parhelion-1.hpp` to run pointwise operations with a reusable pool:
