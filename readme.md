@@ -52,9 +52,7 @@ int main() {
 | ---: | ---: | ---: |
 | 26.016 ms | 38.641 ms | 33.175 ms |
 
-Median of 31 single-threaded runs on an Apple M4 using the pictured 2524 × 1892 RGBA image.
-Timings include allocations and layout conversions and exclude PNG I/O. The benchmark
-preserves the source image, so Parhelion also copies the input before processing.
+benchmark includes allocations and parhelion layout conversions, but excludes png I/O. 
 
 ## threading and metal
 
